@@ -1,5 +1,5 @@
 import asyncio
-from loader import logging, dp, bot
+from loader import dp, bot, logging
 
 from handlers.default_commands import register_commands
 from handlers.opensea.collections import register_opensea
@@ -11,7 +11,7 @@ from utils.commands import set_bot_commands
 # from services.broadcaster import *
 
 
-async def main():
+async def main() -> None:
     # Reading config file TODO
     # config = load_config()
 
@@ -35,9 +35,9 @@ async def main():
         await dp.start_polling() # allowed_updates=False
         
     finally:
-        await dp._closed()
+        # await dp._closed()
         # await dp.storage.wait_closed()
-        # await bot.session.close()
+        await bot.session.close()
 
 
 try:
