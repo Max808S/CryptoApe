@@ -5,7 +5,7 @@ from handlers.default_commands import register_commands
 from handlers.opensea.collections import register_opensea
 
 from utils.notify_admins import on_startup_notify
-from utils.commands import set_bot_commands  # TODO
+from utils.commands import set_bot_commands
 
 # broadcaster TODO
 # from services.broadcaster import *
