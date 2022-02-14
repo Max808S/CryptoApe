@@ -1,28 +1,22 @@
 import asyncio
-from loader import *
+from loader import logging
 
 from handlers.default_commands import register_commands
 from handlers.opensea.collections import *
 
 from utils.notify_admins import on_startup_notify
-# from utils.commands import *  # TODO
+from utils.commands import set_bot_commands  # TODO
 
 # broadcaster TODO
 # from services.broadcaster import *
 
 
 async def main():
-    # Logging from loader.py
-
-    # TODO Reading config file
+    # Reading config file TODO
     # config = load_config()
 
+    # bot start admins notify
     await on_startup_notify(dp)
-
-    # TODO
-    # await set_my_commands(dp)
-
-    # Creating bot and its dispatcher  in [loader.py]
 
     # Register handlers
     register_commands(dp)
@@ -32,19 +26,18 @@ async def main():
     # Register middlewares TODO
     # dp.middleware.setup(DbSessionMiddleware(db_pool))
 
-    # Register /-commands in UI    IDK TODO wtf
-    # await set_bot_commands(bot)
+    # Register /-commands
+    await set_bot_commands(bot)
 
     # Starting polling or TODO webhooks 
     try:
-        await dp.skip_updates() # use to skip pending updates MAYBE
+        await dp.skip_updates() # use to skip pending updates TODO
         await dp.start_polling() # allowed_updates=False
         
     finally:
         await dp._closed()
         # await dp.storage.wait_closed()
         # await bot.session.close()
-
 
 
 try:

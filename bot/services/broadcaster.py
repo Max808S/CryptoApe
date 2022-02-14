@@ -1,17 +1,12 @@
 import asyncio
-# import logging
-from loader import *
-
+from data.config import ADMINS
+from loader import logging, bot, dp
 
 from aiogram.utils import exceptions, executor
 
-# API_TOKEN = 'BOT TOKEN HERE'
 
 # logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('broadcast')
-
-# bot = Bot(token=API_TOKEN, parse_mode=types.ParseMode.HTML)
-# dp = Dispatcher(bot)
 
 
 def get_users():
@@ -20,7 +15,7 @@ def get_users():
 
     In this example returns some random ID's
     """
-    yield from 1426054616
+    yield from ADMINS
 
 
 async def send_message(user_id: int, text: str, disable_notification: bool = False) -> bool:
@@ -70,6 +65,7 @@ async def broadcaster() -> int:
     return count
 
 
+# testing
 if __name__ == '__main__':
     # Execute broadcaster
     executor.start(dp, broadcaster())

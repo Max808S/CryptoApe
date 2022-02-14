@@ -1,10 +1,9 @@
 from textwrap import dedent
+from loader import Dispatcher, bot, dp
 from api_requests.opensea import CollectionStat
 from aiogram import types
-from loader import *
-# from keypads import keyboards as kb
-from keypads.keyboards import nft_collections_menu, back_nft_menu
 
+from keypads.keyboards import nft_collections_menu, back_nft_menu
 
 
 # NFT menu
@@ -19,6 +18,9 @@ async def cmd_opensea(event: types.Message):
 
 def register_opensea(dp: Dispatcher):
     dp.register_message_handler(cmd_opensea, commands='opensea')
+
+
+
 
 
 # menu for every category
