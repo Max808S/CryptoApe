@@ -1,5 +1,7 @@
-from loader import logging, Dispatcher
+from loader import Dispatcher
+
 from data.config import ADMINS
+from utils.misc.logging import logging
 
 
 async def on_startup_notify(dp: Dispatcher):
