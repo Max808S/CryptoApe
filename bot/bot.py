@@ -7,6 +7,7 @@ from handlers.opensea.collections import register_opensea
 from utils.notify_admins import on_startup_notify
 from utils.commands import set_bot_commands
 
+
 # broadcaster TODO
 # from services.broadcaster import *
 
@@ -19,8 +20,8 @@ async def main() -> None:
     await on_startup_notify(dp)
 
     # Register handlers
-    register_commands(dp)
     register_opensea(dp)
+    register_commands(dp)
     # register_callbacks(dp)
     
     # Register middlewares TODO
@@ -40,7 +41,8 @@ async def main() -> None:
         await bot.session.close()
 
 
-try:
-    asyncio.run(main())
-except (KeyboardInterrupt, SystemExit):
-    logging.error("Bot stopped!")
+if __name__ == '__main__':
+    try:
+        asyncio.run(main())
+    except (KeyboardInterrupt, SystemExit):
+        logging.error("Bot stopped!")

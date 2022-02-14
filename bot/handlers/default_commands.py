@@ -3,6 +3,8 @@ from textwrap import dedent
 
 from keypads.keyboards import keyboard as kb
 
+# __all__ = ('cmd_start', 'cmd_help', 'echo')
+
 
 # START command
 async def cmd_start(event: types.Message):
@@ -13,6 +15,7 @@ async def cmd_start(event: types.Message):
         Меню команд - /help
         """
     await event.answer(dedent(start_text), parse_mode=types.ParseMode.HTML, reply_markup=kb)
+
 
 # HELP command
 async def cmd_help(event: types.Message):
@@ -29,12 +32,15 @@ async def cmd_help(event: types.Message):
     await event.answer(dedent(help_text))
 
 
+# ECHO message
+async def echo(message: types.Message):
+    await message.answer(f'Команда не опознана!'
+                         f'\nВаше сообщение:  '
+                         f'\n{message.text}'
+                         f'\nИспользуйте /help')
+
+
 def register_commands(dp: Dispatcher):
     dp.register_message_handler(cmd_start, commands={'start', 'restart'})
     dp.register_message_handler(cmd_help, commands='help')
-
-
-
-def register_default_handlers(dp: Dispatcher):
-    dp.register_message_handler(cmd_start, commands="start")
-    # dp.register_message_handler(cmd_help, commands="help")
+    dp.register_message_handler(echo)
