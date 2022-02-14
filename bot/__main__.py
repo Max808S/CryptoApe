@@ -12,7 +12,7 @@ from utils.notify_admins import on_startup_notify
 
 
 async def main():
-    # [1] Logging from loader.py
+    # Logging from loader.py
 
     # TODO Reading config file
     # config = load_config()
@@ -22,7 +22,7 @@ async def main():
     # TODO
     # await set_my_commands(dp)
 
-    # [2] Creating bot and its dispatcher  in [loader.py]
+    # Creating bot and its dispatcher  in [loader.py]
 
     # Register handlers
     register_commands(dp)
