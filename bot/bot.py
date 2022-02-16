@@ -2,6 +2,7 @@ import asyncio
 from loader import dp, bot
 
 from handlers.default_commands import register_commands
+from handlers.coingecko.coins import register_coins_commands
 from handlers.opensea.collections import register_opensea
 
 from utils.misc.logging import logging
@@ -21,10 +22,11 @@ async def main() -> None:
     await on_startup_notify(dp)
 
     # Register handlers
+    register_coins_commands(dp)
     register_opensea(dp)
-    register_commands(dp)
+    register_commands(dp)    # START / HELP
     # register_callbacks(dp)
-    
+
     # Register middlewares TODO
     # dp.middleware.setup(DbSessionMiddleware(db_pool))
 
@@ -46,4 +48,6 @@ if __name__ == '__main__':
     try:
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
-        logging.error("Bot stopped!")
+        logging.error('Bot stopped!')
+    finally:
+        logging.warning('Goodye!')

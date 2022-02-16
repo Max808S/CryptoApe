@@ -3,8 +3,6 @@ from textwrap import dedent
 
 from keypads.keyboards import keyboard as kb
 
-# __all__ = ('cmd_start', 'cmd_help', 'echo')
-
 
 # START command
 async def cmd_start(event: types.Message):
@@ -38,6 +36,7 @@ async def echo(message: types.Message):
                          f'\nВаше сообщение:  '
                          f'\n{message.text}'
                          f'\nИспользуйте /help')
+
 
 
 def register_commands(dp: Dispatcher):
