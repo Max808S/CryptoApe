@@ -1,4 +1,5 @@
 import asyncio
+
 from loader import dp, bot
 
 from handlers.default_commands import register_commands
@@ -32,6 +33,7 @@ async def main() -> None:
 
     # Register /-commands
     await set_bot_commands(bot)
+    # await set_my_commands(bot)
 
     # Starting polling or TODO webhooks 
     try:

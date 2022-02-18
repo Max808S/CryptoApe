@@ -40,6 +40,6 @@ async def echo(message: types.Message):
 
 
 def register_commands(dp: Dispatcher):
-    dp.register_message_handler(cmd_start, commands={'start', 'restart'})
+    dp.register_message_handler(cmd_start, commands={'start', 'restart', 'rst'})
     dp.register_message_handler(cmd_help, commands='help')
     dp.register_message_handler(echo)
