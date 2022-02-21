@@ -1,4 +1,4 @@
-from loader import Bot
+from aiogram import Bot
 from aiogram.types import BotCommand
 
 

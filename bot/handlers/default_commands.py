@@ -1,22 +1,26 @@
-from aiogram import types, Dispatcher
-from textwrap import dedent
+# from aiogram import types, Dispatcher
+from aiogram import Router
+from aiogram.types import Message
+from aiogram.dispatcher.filters import Command
+# from aiogram.dispatcher.fsm.context import FSMContext TODO
 
-from keypads.keyboards import keyboard as kb
+from textwrap import dedent
+from keypads.keyboards import get_main_keyboard as mk
 
 
 # START command
-async def cmd_start(event: types.Message):
+async def cmd_start(message: Message):
     start_text = f"""\
-        <b>{event.from_user.get_mention(as_html=True)}, добро пожаловать в CryptoCat сообщество!</b>
+        <b>{message.from_user.first_name}, добро пожаловать в CryptoCat сообщество!</b>
         Бот создан помочь отслеживать цены на криптоактивы.
         
         Меню команд - /help
         """
-    await event.answer(dedent(start_text), parse_mode=types.ParseMode.HTML, reply_markup=kb)
+    await message.answer(dedent(start_text), reply_markup=mk()) # , parse_mode=types.ParseMode.HTML
 
 
 # HELP command
-async def cmd_help(event: types.Message):
+async def cmd_help(message: Message):
     help_text = f"""\
         Crypto Bot Help Menu:
 
@@ -27,11 +31,11 @@ async def cmd_help(event: types.Message):
         /gas - стоимость транзакций на ефире
         /restart - перезагрузить бота
         """
-    await event.answer(dedent(help_text))
+    await message.answer(dedent(help_text))
 
 
 # ECHO message
-async def echo(message: types.Message):
+async def echo(message: Message):
     await message.answer(f'Команда не опознана!'
                          f'\nВаше сообщение:  '
                          f'\n{message.text}'
@@ -39,7 +43,8 @@ async def echo(message: types.Message):
 
 
 
-def register_commands(dp: Dispatcher):
-    dp.register_message_handler(cmd_start, commands={'start', 'restart', 'rst'})
-    dp.register_message_handler(cmd_help, commands='help')
-    dp.register_message_handler(echo)
+def register_commands(router: Router):
+    # flags = {"throttling_key": "default"} TODO
+    router.message.register(cmd_start, Command(commands={'start', 'restart'})) #, flags=flags
+    router.message.register(cmd_help, Command(commands="help"))
+    router.message.register(echo)

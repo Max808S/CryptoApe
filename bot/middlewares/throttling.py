@@ -1,49 +1,34 @@
-import asyncio
+### TODO aiogram v3 ###
 
-from aiogram import types, Dispatcher
-from aiogram.dispatcher import DEFAULT_RATE_LIMIT
-from aiogram.dispatcher.handler import CancelHandler, current_handler
-from aiogram.dispatcher.middlewares import BaseMiddleware
-from aiogram.utils.exceptions import Throttled
+# from typing import Any, Awaitable, Callable, Dict
+
+# from aiogram import BaseMiddleware
+# from aiogram.dispatcher.event.handler import HandlerObject
+# from aiogram.types import Update
+# from cachetools import TTLCache
+
+# from bot.const import THROTTLE_TIME_SPIN, THROTTLE_TIME_OTHER
+
+# caches = {
+#     "spin": TTLCache(maxsize=10_000, ttl=THROTTLE_TIME_SPIN),
+#     "default": TTLCache(maxsize=10_000, ttl=THROTTLE_TIME_OTHER)
+# }
 
 
-class ThrottlingMiddleware(BaseMiddleware):
-    """
-    Simple middleware
-    """
-
-    def __init__(self, limit=DEFAULT_RATE_LIMIT, key_prefix='antiflood_'):
-        self.rate_limit = limit
-        self.prefix = key_prefix
-        super(ThrottlingMiddleware, self).__init__()
-
-    # noinspection PyUnusedLocal
-    async def on_process_message(self, message: types.Message, data: dict):
-        handler = current_handler.get()
-        dispatcher = Dispatcher.get_current()
-        if handler:
-            limit = getattr(handler, 'throttling_rate_limit', self.rate_limit)
-            key = getattr(handler, 'throttling_key', f"{self.prefix}_{handler.__name__}")
-        else:
-            limit = self.rate_limit
-            key = f"{self.prefix}_message"
-        try:
-            await dispatcher.throttle(key, rate=limit)
-        except Throttled as t:
-            await self.message_throttled(message, t)
-            raise CancelHandler()
-
-    async def message_throttled(self, message: types.Message, throttled: Throttled):
-        handler = current_handler.get()
-        dispatcher = Dispatcher.get_current()
-        if handler:
-            key = getattr(handler, 'throttling_key', f"{self.prefix}_{handler.__name__}")
-        else:
-            key = f"{self.prefix}_message"
-        delta = throttled.rate - throttled.delta
-        if throttled.exceeded_count <= 2:
-            await message.reply('Too many requests! ')
-        await asyncio.sleep(delta)
-        thr = await dispatcher.check_key(key)
-        if thr.exceeded_count == throttled.exceeded_count:
-            await message.reply('Unlocked.')
+# class ThrottlingMiddleware(BaseMiddleware):
+#     async def __call__(
+#             self,
+#             handler: Callable[[Update, Dict[str, Any]], Awaitable[Any]],
+#             event: Update,
+#             data: Dict[str, Any],
+#     ) -> Any:
+#         real_handler: HandlerObject = data.get("handler")
+#         throttling_key = real_handler.flags.get("throttling_key")
+#         if throttling_key is not None and throttling_key in caches:
+#             # Поскольку мидлварь только для Message, то тип Update всегда Message.
+#             # И проверку if isinstance(event, Message) можно пропустить, хотя PyCharm будет ругаться
+#             if event.chat.id in caches[throttling_key]:
+#                 return
+#             else:
+#                 caches[throttling_key][event.chat.id] = None
+#         return await handler(event, data)
