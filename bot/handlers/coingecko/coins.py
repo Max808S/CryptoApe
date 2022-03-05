@@ -2,6 +2,7 @@ from aiogram import Router, types
 
 from api_requests.coingecko.coingecko import get_bitcoin_price, get_ethereum_price
 from api_requests.coingecko.trending_coins import get_trending_coins
+from api_requests.coingecko.coingecko import get_price
 # from api_requests.coingecko.coingecko import get_coin_price
 
 
@@ -23,6 +24,11 @@ async def price_eth(message: types.Message):
     await message.answer(f"Цена ефириум = {await get_ethereum_price()}")
 
 
+async def token_price(message: types.Message):
+    await message.answer(await get_price())
+
+
+
 ## TODO
 # async def handle_coins(message: types.Message):
 #     price = await get_coin_price("eth")
@@ -33,6 +39,8 @@ def register_coins_commands(router: Router):
     router.message.register(price_btc, commands='btc')
     router.message.register(price_eth, commands='eth')
     router.message.register(trend, commands='trend')
+    router.message.register(token_price, commands='price')
+
 
 # def register_coins_commands(dp: Dispatcher):
 #     dp.register_message_handler(price_btc, commands='btc')
