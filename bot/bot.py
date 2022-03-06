@@ -5,7 +5,7 @@ from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
 # from aiogram.dispatcher.fsm.storage.redis import RedisStorage    # TODO
 
 from handlers.default_commands import register_commands
-from handlers.coingecko.coins import register_coins_commands
+# from handlers.coingecko.coins import register_coins_commands
 from handlers.opensea.collections import register_opensea    # TODO
 
 from utils.misc.logging import logging
@@ -36,7 +36,7 @@ async def main() -> None:
 
     # Register handlers
     register_opensea(default_router)  # TODO
-    register_coins_commands(default_router)
+    # register_coins_commands(default_router)
     register_commands(default_router)    # START / HELP
 
     # Создание диспетчера и навешивание роутера     TODO

@@ -1,31 +1,16 @@
 import aiohttp
 import datetime
-# from datetime import datetime
+# from datetime import datetime # TODO
 
 
-async def get_bitcoin_price():
+async def get_price(token):
     async with aiohttp.ClientSession() as session:
-        async with session.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd') as response:
-            bitcoin = await response.json()
-        return int(bitcoin["bitcoin"]["usd"])
-
-async def get_ethereum_price():
-    async with aiohttp.ClientSession() as session:
-        async with session.get('https://api.coingecko.com/api/v3/simple/price?ids=swapall&vs_currencies=usd') as response:
-            bitcoin = await response.json()
-        return bitcoin["swapall"]["usd"]
-
-
-# TODO #
-token = 'litecoin'
-base_url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&'\
-    'ids='+token+'&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h%2C7d%2C30d'
-
-
-async def get_price():
-    async with aiohttp.ClientSession() as session:
+        
+        url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&'\
+            'ids='+token+'&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h%2C7d%2C30d'
+        
         coin_stats = {} # TODO
-        async with session.get(base_url) as response:
+        async with session.get(url) as response:
             coin_data = await response.json()
             name = coin_data[0]["name"]
             symbol = coin_data[0]["symbol"]
@@ -44,10 +29,7 @@ async def get_price():
             percent_change_24h = float("{:.1f}".format(coin_data[0]['price_change_percentage_24h_in_currency']))
             percent_change_7d = float("{:.1f}".format(coin_data[0]['price_change_percentage_7d_in_currency']))
             percent_change_30d = float("{:.1f}".format(coin_data[0]['price_change_percentage_30d_in_currency']))
-            # percent_change_1h = float("{:.1f}".format(coin_data[0]['price_change_percentage_1h_in_currency']))
-            # percent_change_14d = float("{:.1f}".format(coin_data[0]['price_change_percentage_14d_in_currency']))
-            # percent_change_1y = float("{:.1f}".format(coin_data[0]['price_change_percentage_1y_in_currency']))
-            
+               
             current_time = datetime.datetime.now().strftime('%H:%M:%S')  # %m.%d
             total_info = (
                 f'{name} - {symbol}  🏅 {coin_cap_rank}\n'
@@ -68,39 +50,15 @@ async def get_price():
         return total_info
 
 
-# ## TODO
-# coin_names = {
-# "eth": "ethereum",
-# "btc": "bitcoin"
-# }
+# async def get_bitcoin_price():
+#     async with aiohttp.ClientSession() as session:
+#         async with session.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd') as response:
+#             bitcoin = await response.json()
+#         return int(bitcoin["bitcoin"]["usd"])
 
-# search_url = 'https://api.coingecko.com/api/v3/search?query='
 
-# async def get_coin_price(coin_short_name: str) -> int:
-#     coin_name = coin_names.get(coin_short_name)
-#     if not coin_name:
-#         return 0
+# async def get_ethereum_price():
 #     async with aiohttp.ClientSession() as session:
 #         async with session.get('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd') as response:
-#             result = await response.json()
-#         # return int(result[coin_name]["usd"])
-#         print(int(result[coin_name]["usd"]))
-
-
-# if __name__ == '__main__':
-#     get_coin_price()
-
-
-
-
-
-
-
-### TODO ###
-# async def alarm(message: types.Message):
-#     mean = int(input())
-#     while True:
-#         await asyncio.sleep(3)
-#         if mean < await get_bitcoin_price():
-#             await message.answer(f"Цена биткоина пересекла вашу отметку {mean}")
-#             break
+#             bitcoin = await response.json()
+#         return bitcoin["swapall"]["usd"]

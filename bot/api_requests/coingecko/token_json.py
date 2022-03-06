@@ -1,14 +1,9 @@
 import csv
 
-# with open("CoinGecko Token API List - CoinGecko Token API List.csv", newline="") as csvfile:
-#     reader = csv.DictReader(csvfile)
-#     for row in reader:
-#         print(row['Id'], row['Symbol'], row['Name'])
 
-# print(row)
-
-
-with open('CoinGecko Token API List - CoinGecko Token API List.csv', newline='') as f:
-    reader = csv.reader(f)
-    for row in reader:
-        print(row)
+with open('CoinGecko Token API List - CoinGecko Token API List.csv', mode='r') as csv_data:
+    reader = csv.reader(csv_data)
+    dict_from_csv = {rows[0]:rows[1] for rows in reader}
+    
+csv_keys = list(dict_from_csv.keys())
+csv_values = list(dict_from_csv.values())
