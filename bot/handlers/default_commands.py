@@ -17,6 +17,7 @@ async def cmd_start(message: Message):
         <b>{message.from_user.first_name}, добро пожаловать в CryptoCat сообщество!</b>
         Бот создан помочь отслеживать цены на криптоактивы.
         
+        Посмотреть актуальный прайс монеты, вы можете с помощью команды /btc или /bitcoin (пишите любую монету)
         Меню команд - /help
         """
     await message.answer(dedent(start_text), reply_markup=mk()) # , parse_mode=types.ParseMode.HTML

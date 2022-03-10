@@ -16,6 +16,6 @@ async def get_trending_coins():
             name = coins["item"]["name"]
             symbol = coins["item"]["symbol"]
             cap = coins["item"]["market_cap_rank"]
-            trend_list.append(f'#{cap}   {symbol}  -  {name} ')
+            trend_list.append(f'#{cap}   /{symbol.lower()}  -  {name}')
         
         return('\n'.join(trend_list))

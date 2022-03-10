@@ -71,4 +71,4 @@ if __name__ == '__main__':
     except (KeyboardInterrupt, SystemExit):
         logging.error('Bot stopped!')
     finally:
-        logging.warning('Goodye!')
+        logging.warning('Goodbye!')
