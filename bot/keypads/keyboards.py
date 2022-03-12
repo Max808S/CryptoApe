@@ -1,5 +1,9 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
+from aiogram.types.inline_keyboard_button import InlineKeyboardButton
+from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
+from aiogram.dispatcher.filters.callback_data import CallbackData   # TODO
+
 
 def get_main_keyboard() -> None:
     """
@@ -12,6 +16,56 @@ def get_main_keyboard() -> None:
     return ReplyKeyboardMarkup(keyboard=keyboard, resize_keyboard=True)
 
 
+def coins_menu_keyboard() -> None:
+    """
+    /coins menu
+    """
+    coins_board = [
+        [KeyboardButton(text='BTC'), KeyboardButton(text='ETH'), KeyboardButton(text='BNB'), 
+        KeyboardButton(text='SOL'), KeyboardButton(text='DOT')],    # row 1
+        [KeyboardButton(text='XRP'), KeyboardButton(text='ADA'), KeyboardButton(text='LUNA'), 
+        KeyboardButton(text='AVAX'), KeyboardButton(text='DOGE')],    # row 2
+        [KeyboardButton(text='MATIC'), KeyboardButton(text='LINK'), KeyboardButton(text='NEAR'), 
+        KeyboardButton(text='LTC'), KeyboardButton(text='TRX')],    # row 3
+        [KeyboardButton(text='XLM'), KeyboardButton(text='VET'), KeyboardButton(text='SAND'), 
+        KeyboardButton(text='GALA'), KeyboardButton(text='OASIS')],    # row 4
+    ]
+    return ReplyKeyboardMarkup(keyboard=coins_board, resize_keyboard=True)
+
+
+# testing
+def coins_menu_inline_keyboard() -> None:
+    inline_board =[
+        [
+            InlineKeyboardButton(text='BTC', callback_data='/btc'), 
+            InlineKeyboardButton(text='ETH', callback_data='/eth'), 
+            InlineKeyboardButton(text='BNB', callback_data='/bnb'), 
+            InlineKeyboardButton(text='SOL', callback_data='/sol'), 
+            InlineKeyboardButton(text='DOT', callback_data='/dot')
+            ],
+        [
+            InlineKeyboardButton(text='XRP', callback_data='/xrp'),
+            InlineKeyboardButton(text='ADA', callback_data='/ada'),
+            InlineKeyboardButton(text='LUNA', callback_data='/luna'),
+            InlineKeyboardButton(text='AVAX', callback_data='/avax'),
+            InlineKeyboardButton(text='DOGE', callback_data='/doge')
+            ],
+        [
+            InlineKeyboardButton(text='MATIC', callback_data='/matic'),
+            InlineKeyboardButton(text='LINK', callback_data='/link'),
+            InlineKeyboardButton(text='NEAR', callback_data='/near'),
+            InlineKeyboardButton(text='LTC', callback_data='/ltc'),
+            InlineKeyboardButton(text='TRX', callback_data='/trx')
+            ],
+        [
+            InlineKeyboardButton(text='XLM', callback_data='/xlm'),
+            InlineKeyboardButton(text='VET', callback_data='/vet'),
+            InlineKeyboardButton(text='SAND', callback_data='/sand'),
+            InlineKeyboardButton(text='GALA', callback_data='/gala'),
+            InlineKeyboardButton(text='OASIS', callback_data='/oasis')
+            ]
+        ]
+    return InlineKeyboardMarkup(inline_keyboard=inline_board)
 
 
 # # OpenSea
