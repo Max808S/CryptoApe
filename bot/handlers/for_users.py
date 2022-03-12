@@ -1,18 +1,28 @@
-# from aiogram import types, Dispatcher
 from aiogram import Router
 from aiogram.types import Message
 from aiogram.dispatcher.filters import Command
 # from aiogram.dispatcher.fsm.context import FSMContext TODO
 
-from textwrap import dedent
+from handlers.coingecko.coins import token_id, token_name, trend
+from api_requests.coingecko.token_json import csv_keys, csv_values
 from keypads.keyboards import get_main_keyboard as mk
+from keypads.keyboards import coins_menu_inline_keyboard as ik
 
-from api_requests.coingecko.token_json import dict_from_csv, csv_keys, csv_values
-from handlers.coingecko.coins import trend, same_def_1, same_def_2
+from textwrap import dedent
 
 
-# START command
-async def cmd_start(message: Message):
+user_router = Router()
+
+
+@user_router.message(commands="user")
+async def cmd_test2(message: Message):
+    await message.answer("This is a router for users")
+
+
+async def cmd_start(message: Message) -> str:
+    """
+    /START bot command
+    """
     start_text = f"""\
         <b>{message.from_user.first_name}, добро пожаловать в CryptoCat сообщество!</b>
         Бот создан помочь отслеживать цены на криптоактивы.
@@ -23,8 +33,10 @@ async def cmd_start(message: Message):
     await message.answer(dedent(start_text), reply_markup=mk()) # , parse_mode=types.ParseMode.HTML
 
 
-# HELP command
-async def cmd_help(message: Message):
+async def cmd_help(message: Message) -> str:
+    """
+    /HELP bot command
+    """
     help_text = f"""\
         Crypto Bot Help Menu:
 
@@ -35,15 +47,29 @@ async def cmd_help(message: Message):
         /gas - стоимость транзакций на ефире
         /restart - перезагрузить бота
         """
-    await message.answer(dedent(help_text))
+    await message.answer(dedent(help_text)) # TODO dedent
 
 
-# ECHO message
-async def echo(message: Message):
-    await message.answer(f'Команда не опознана!'
-                         f'\nВаше сообщение:  '
-                         f'\n{message.text}'
-                         f'\nИспользуйте /help')
+async def cmd_coins(message: Message) -> str:
+    """
+    /COINS bot command
+    """
+    main_coins_text = (
+        f'Выбери монетку которую хочешь посмотреть:'
+    )
+    await message.answer(main_coins_text, reply_markup=ik())
+
+
+async def echo(message: Message) -> str:
+    """
+    ECHO message
+    """
+    await message.answer(
+        f'<b>Команда не опознана!</b>'
+        f'\nВаше сообщение:'
+        f'\n{message.text}'
+        f'\nИспользуйте /help'
+        )
 
 
 # # v2 aio Эхо хендлер, куда летят ВСЕ сообщения с указанным состоянием
@@ -59,7 +85,8 @@ def register_commands(router: Router):
     # flags = {"throttling_key": "default"} TODO
     router.message.register(cmd_start, Command(commands={'start', 'restart'})) #, flags=flags
     router.message.register(cmd_help, Command(commands="help"))
+    router.message.register(cmd_coins, commands='coins')
     router.message.register(trend, commands='trend')
-    router.message.register(same_def_1, commands=csv_keys)
-    router.message.register(same_def_2, commands=csv_values)
+    router.message.register(token_id, commands=csv_keys)
+    router.message.register(token_name, commands=csv_values)
     router.message.register(echo)

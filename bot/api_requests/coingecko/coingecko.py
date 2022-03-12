@@ -4,7 +4,7 @@ import datetime
 from utils.misc.logging import logger
 
 
-async def get_price(token):
+async def get_price(token) -> str:
     """
     Getting token current price and another data
     """
@@ -83,7 +83,7 @@ async def get_price(token):
             return total_info
     except Exception as ex:
         logger.info(f'HUSTON WE HAVE A PROBLEM: \ncoingecko > get_price: {ex}')
-        return 'PLS try again later...'
+        return 'PLS try again later...' # TODO
 
 
 ### previous working function ###
