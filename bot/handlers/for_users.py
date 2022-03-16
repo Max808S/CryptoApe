@@ -10,7 +10,8 @@ from keypads.keyboards import coins_menu_inline_keyboard as ik
 
 from textwrap import dedent
 
-
+from handlers.coingecko.cg_categories import cg_categories
+from api_requests.coingecko.token_json import cg_categories_keys, cg_categories_values
 user_router = Router()
 
 
@@ -87,6 +88,7 @@ def register_commands(router: Router):
     router.message.register(cmd_help, Command(commands="help"))
     router.message.register(cmd_coins, commands='coins')
     router.message.register(trend, commands='trend')
-    router.message.register(token_id, commands=csv_keys)
-    router.message.register(token_name, commands=csv_values)
+    router.message.register(token_name, commands=csv_keys)
+    router.message.register(token_id, commands=csv_values)
+    router.message.register(cg_categories, commands=cg_categories_keys)
     router.message.register(echo)
