@@ -16,23 +16,6 @@ def get_main_keyboard() -> None:
     return ReplyKeyboardMarkup(keyboard=keyboard, resize_keyboard=True)
 
 
-def coins_menu_keyboard() -> None:
-    """
-    /coins menu
-    """
-    coins_board = [
-        [KeyboardButton(text='BTC'), KeyboardButton(text='ETH'), KeyboardButton(text='BNB'), 
-        KeyboardButton(text='SOL'), KeyboardButton(text='DOT')],    # row 1
-        [KeyboardButton(text='XRP'), KeyboardButton(text='ADA'), KeyboardButton(text='LUNA'), 
-        KeyboardButton(text='AVAX'), KeyboardButton(text='DOGE')],    # row 2
-        [KeyboardButton(text='MATIC'), KeyboardButton(text='LINK'), KeyboardButton(text='NEAR'), 
-        KeyboardButton(text='LTC'), KeyboardButton(text='TRX')],    # row 3
-        [KeyboardButton(text='XLM'), KeyboardButton(text='VET'), KeyboardButton(text='SAND'), 
-        KeyboardButton(text='GALA'), KeyboardButton(text='OASIS')],    # row 4
-    ]
-    return ReplyKeyboardMarkup(keyboard=coins_board, resize_keyboard=True)
-
-
 # testing
 def coins_menu_inline_keyboard() -> None:
     inline_board =[
