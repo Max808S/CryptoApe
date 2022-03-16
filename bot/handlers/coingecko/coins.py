@@ -16,23 +16,27 @@ async def trend(message: types.Message):
         f"(в порядке убывания популярности):" 
         f"\n\n{await get_trending_coins()}")
     
-
-async def token_id(message: types.Message) -> str:
-    """
-    Checking the coin in the database (CSV COINS LIST) by id.
-    """
-    result = await get_price(message.text[1:])
-    await message.answer(result)
-
     
 async def token_name(message: types.Message) -> str:
     """
     Checking the coin in the database (CSV COINS LIST) by name.
     """
+    result = await get_price(message.text[1:])
+    # await message.delete()
+    # await message.delete(message.message_id)
+    await message.answer(result)
+
+    
+async def token_id(message: types.Message) -> str:
+    """
+    Checking the coin in the database (CSV COINS LIST) by id.
+    """
     for key, value in dict_from_csv.items():
         if value == message.text[1:]:
             result = await get_price(key)
     await message.answer(result)
+
+
 
 
 
