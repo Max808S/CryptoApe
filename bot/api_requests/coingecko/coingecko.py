@@ -94,22 +94,28 @@ async def get_price(token) -> str:
                 else:
                     logger.info(f"Getting FULL stats for {token}")
                     
-                    high_price = '{0:,}'.format(current_price).replace(',', ' ')                    
+                    # current price
+                    high_price = '{0:,}'.format(current_price).replace(',', ' ')
                     low_price = '{:.8f}'.format(current_price)
-
                     formatted_current_price = (low_price if current_price < 0.0009 else high_price) # TODO
                     
                     coin_market_cap = '{0:,}'.format(market_cap).replace(',', ' ')
                     coin_volume = '{0:,}'.format(total_volume).replace(',', ' ')
-                    
+
+                    # maximum and minimum price per 24h
                     high_price_high_24h = '{0:,}'.format(high_24h).replace(',', ' ')
                     high_price_low_24h = '{0:,}'.format(low_24h).replace(',', ' ')
                     low_price_high_24h = '{:.8f}'.format(high_24h)
                     low_price_low_24h = '{:.8f}'.format(low_24h)
-
                     formatted_high_24h = (low_price_high_24h if high_24h < 0.0009 else high_price_high_24h)
                     formatted_low_24h = (low_price_low_24h if low_24h < 0.0009 else high_price_low_24h)
+                    
+                    # ath
+                    high_ath = '{0:,}'.format(ath).replace(',', ' ') 
+                    low_ath = '{:.8f}'.format(ath)
+                    formatted_ath = (low_ath if ath < 0.0009 else high_ath)
 
+                    # percentage change in price
                     formatted_change_24h = float("{:.1f}".format(percent_change_24h))
                     formatted_change_7d = float("{:.1f}".format(percent_change_7d))
                     formatted_change_30d = float("{:.1f}".format(percent_change_30d))
@@ -121,7 +127,7 @@ async def get_price(token) -> str:
                         f'\n'
                         f'<b>Максимум и минимум за 24ч:</b>\n'
                         f'📈 {formatted_high_24h} <b>$</b>  📉 {formatted_low_24h} <b>$</b>\n'
-                        f'<b>Максимум за всё время:</b> {ath} <b>$</b>\n\n'
+                        f'<b>Максимум за всё время:</b> {formatted_ath} <b>$</b>\n\n'
                         f'📊 <b>Объём за 24ч:</b> {coin_volume} <b>$</b>\n'
                         f'📊 <b>Капитализация:</b> {coin_market_cap} <b>$</b>\n'
                         f'\n'
@@ -132,7 +138,7 @@ async def get_price(token) -> str:
                         )
             return total_info
     except Exception as ex:
-        logger.info(f'Got an error with the {token} token: \n{ex}')
+        logger.info(f'Got an ERROR with the {token} token: \n{ex}')
         except_info = (
             f'Sorry, we got a problem with:\n'
             f'⚠️ {name} - <b>{symbol}</b>\n'
