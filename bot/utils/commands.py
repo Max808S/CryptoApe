@@ -4,11 +4,11 @@ from aiogram.types import BotCommand
 
 async def set_bot_commands(bot: Bot):
     commands = [
-            BotCommand(command="btc", description="Получить данные любой монеты по SYMBOL"),
-            BotCommand(command="bitcoin", description="Получить данные любой монеты по её названию"),
-            BotCommand(command="start", description="Перезапустить бота"),
-            BotCommand(command="coins", description="Криптомонеты"),
-            BotCommand(command="opensea", description="Показать NFT коллекции"),
-            BotCommand(command="trend", description="Топ-7 поиска за 24ч.")
+            BotCommand(command="btc", description="Получить цену любой монеты по тикеру"),
+            BotCommand(command="bitcoin", description="Получить цену любой монеты по имени"),
+            BotCommand(command="coins", description="Криптовалюты"),
+            BotCommand(command='categories', description='Категории'),
+            BotCommand(command="trend", description="Топ-7 поиска за 24ч."),
+            BotCommand(command="start", description="Перезапустить бота")
         ]
     await bot.set_my_commands(commands=commands)
