@@ -1,6 +1,6 @@
 import asyncio
 
-from aiogram import Bot, Dispatcher, Router
+from aiogram import Bot, Dispatcher
 from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
 # from aiogram.dispatcher.fsm.storage.redis import RedisStorage    # TODO
 
