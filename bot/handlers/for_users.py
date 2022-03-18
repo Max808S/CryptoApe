@@ -4,82 +4,70 @@ from aiogram.dispatcher.filters import Command
 # from aiogram.dispatcher.fsm.context import FSMContext TODO
 
 from handlers.coingecko.coins import token_id, token_name, trend
-from api_requests.coingecko.token_json import csv_keys, csv_values
-from keypads.keyboards import get_main_keyboard as mk
-from keypads.keyboards import coins_menu_inline_keyboard as ik
-
-from textwrap import dedent
-
 from handlers.coingecko.cg_categories import cg_categories
-from api_requests.coingecko.token_json import cg_categories_keys, cg_categories_values
+
+from api_requests.coingecko.token_json import csv_keys, csv_values
+from api_requests.coingecko.token_json import cg_categories_values
+from data.text_file import help_text, coins_text, categories_text
+
+from keypads.keyboards import (
+    get_main_keyboard as main_kb,
+    get_coin_inline_keyboard as coin_kb,
+    get_categories_inline_keyboard as cat_kb
+)
+
 user_router = Router()
 
 
 @user_router.message(commands="user")
-async def cmd_test2(message: Message):
+async def cmd_test2(message: Message) -> str:
     await message.answer("This is a router for users")
-
-
-async def cmd_start(message: Message) -> str:
-    """
-    /START bot command
-    """
-    start_text = f"""\
-        <b>{message.from_user.first_name}, добро пожаловать в CryptoCat сообщество!</b>
-        Бот создан помочь отслеживать цены на криптоактивы.
-        
-        Посмотреть актуальный прайс монеты, вы можете с помощью команды /btc или /bitcoin (пишите любую монету)
-        Меню команд - /help
-        """
-    await message.answer(dedent(start_text), reply_markup=mk()) # , parse_mode=types.ParseMode.HTML
 
 
 async def cmd_help(message: Message) -> str:
     """
     /HELP bot command
     """
-    help_text = f"""\
-        Crypto Bot Help Menu:
-
-        /coins - посмотреть монеты
-        /notify - установить уведомление
-        /exchanges - посмотреть биржи
-        /opensea - nft коллекции
-        /gas - стоимость транзакций на ефире
-        /restart - перезагрузить бота
-        """
-    await message.answer(dedent(help_text)) # TODO dedent
+    await message.answer(help_text)
 
 
 async def cmd_coins(message: Message) -> str:
     """
     /COINS bot command
     """
-    main_coins_text = (
-        f'Выбери монетку которую хочешь посмотреть:'
+    await message.answer(coins_text, reply_markup=coin_kb())
+
+
+async def cmd_categories(message: Message) -> str:
+    """
+    /CATEGORIES bot command
+    """
+    await message.answer(categories_text, reply_markup=cat_kb())
+
+
+async def cmd_start(message: Message) -> str:
+    """
+    /START bot command
+    """
+    start_text = (
+        f'<b>{message.from_user.first_name}, добро пожаловать в CryptoApe сообщество!</b>\n'
+        'Бот создан помочь отслеживать цены на криптоактивы.\n\n'
+        'Меню команд - /help'
     )
-    await message.answer(main_coins_text, reply_markup=ik())
+    await message.answer(start_text, reply_markup=main_kb()) # , parse_mode=types.ParseMode.HTML
 
 
 async def echo(message: Message) -> str:
     """
     ECHO message
     """
-    await message.answer(
-        f'<b>Команда не опознана!</b>'
-        f'\nВаше сообщение:'
-        f'\n{message.text}'
-        f'\nИспользуйте /help'
-        )
-
-
-# # v2 aio Эхо хендлер, куда летят ВСЕ сообщения с указанным состоянием
-# @dp.message_handler(state="*", content_types=types.ContentTypes.ANY)
-# async def bot_echo_all(message: types.Message, state: FSMContext):
-#     state = await state.get_state()
-#     await message.answer(f'Эхо в состоянии <code>{state}</code>.\n'
-#                          f'\nСодержание сообщения: '
-#                          f'\n<code>{message}</code>')
+    echo_text = (
+        '<b>Команда не опознана!</b>\n'
+        'Ваше сообщение:\n'
+        f'{message.text}\n\n'
+        '<b>Используйте</b> /help'
+    )
+    await message.answer(echo_text)
 
 
 def register_commands(router: Router):
@@ -87,8 +75,19 @@ def register_commands(router: Router):
     router.message.register(cmd_start, Command(commands={'start', 'restart'})) #, flags=flags
     router.message.register(cmd_help, Command(commands="help"))
     router.message.register(cmd_coins, commands='coins')
+    router.message.register(cmd_categories, commands='categories')
     router.message.register(trend, commands='trend')
-    router.message.register(token_name, commands=csv_keys)
-    router.message.register(token_id, commands=csv_values)
-    router.message.register(cg_categories, commands=cg_categories_keys)
+    router.message.register(token_name, commands=csv_keys)  # search tokens by name
+    router.message.register(token_id, commands=csv_values)  # search tokens by symbol
+    router.message.register(cg_categories, commands=cg_categories_values)
     router.message.register(echo)
+
+
+# TODO
+# # v2 aio Эхо хендлер, куда летят ВСЕ сообщения с указанным состоянием
+# @dp.message_handler(state="*", content_types=types.ContentTypes.ANY)
+# async def bot_echo_all(message: types.Message, state: FSMContext):
+#     state = await state.get_state()
+#     await message.answer(f'Эхо в состоянии <code>{state}</code>.\n'
+#                          f'\nСодержание сообщения: '
+#                          f'\n<code>{message}</code>')
