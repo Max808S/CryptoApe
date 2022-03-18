@@ -8,5 +8,7 @@ async def cg_categories(message: types.Message) -> str:
     """
     Get categories
     """
-    result_cg_cat = await get_cg_categories(message.text[1:])
-    await message.answer(result_cg_cat)
+    for key, value in dict_from_cg_categories_csv.items():
+        if value == message.text[1:]:
+            result = await get_cg_categories(key)
+    await message.answer(result)
