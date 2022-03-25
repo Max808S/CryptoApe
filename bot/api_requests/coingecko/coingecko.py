@@ -168,7 +168,8 @@ async def get_cg_categories(category):
             coin_rank = item['market_cap_rank']
             coin_name = item['name']
             coin_symbol = item['symbol']
-            coin_price = float("{:.2f}".format(item['current_price']))
+            # coin_price = float("{:.2f}".format(item['current_price']))
+            coin_price = item['current_price']
             rank_emoji = "⚠️" if coin_rank == None else "🏅"
             gg_data.append(
                 f'{coin_rank} {rank_emoji} /{coin_symbol} <b>{coin_name}</b> - {coin_price} $'
