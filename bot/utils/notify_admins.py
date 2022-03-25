@@ -1,13 +1,15 @@
-# from loader import Dispatcher
+import logging
 
-# from data.config import ADMINS
-# from utils.misc.logging import logging
+from aiogram import Bot
+from data.config_reader import load_config
 
-## TODO ##
 
-# async def on_startup_notify(dp: Dispatcher):
-#     for admin in ADMINS:
-#         try:
-#             await dp.bot.send_message(admin, f'Привет! Я включился :)')
-#         except Exception as err:
-#             logging.exception(err)
+async def on_startup_notify(bot: Bot) -> None:
+    try:
+        config = load_config()
+        admin = config.tg_bot.admin
+        await bot.send_message(admin, "🤖")
+        await bot.send_message(admin, f'Привет 👋🏻 Я включился!')
+        logging.info(f'ADMINS ID: {admin} are notified about the start of the bot!')
+    except Exception as ex:
+        logging.exception(ex)
