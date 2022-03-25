@@ -1,6 +1,20 @@
 # А file with all the necessary text commands for the bot to work
 
 
+main_text = (
+    "<b>CryptoApe Help Menu:</b>\n\n"
+    "Что бы получить цену интересующей вас "
+    "криптовалюты достаточно написать её название:\n"
+    "<code>bitcoin</code>,  <code>btc</code> или /bitcoin  /btc"
+)
+
+# main_text = """
+# <b>CryptoApe Help Menu:</b>
+
+
+# """
+
+
 help_text = """
 <b>CryptoApe Help Menu:</b>
 
@@ -21,81 +35,380 @@ trend_text = (
 
 
 categories_commands = """
-/smart_contract_platform <b>Smart Contract Platform</b>
-/binance_smart_chain <b>BNB Chain Ecosystem</b>
-/polygon_ecosystem <b>Polygon Ecosystem</b>
-/avalanche_ecosystem <b>Avalanche Ecosystem</b>
-/moonriver_ecosystem <b>Moonriver Ecosystem</b>
-/fantom_ecosystem <b>Fantom Ecosystem</b>
-/stablecoins <b>Stablecoins</b>
-/arbitrum_ecosystem	<b>Arbitrum Ecosystem</b>
-/near_protocol_ecosystem <b>Near Protocol Ecosystem</b>
-/decentralized_finance_defi	<b>Decentralized Finance (DeFi)</b>
-/exchange_based_tokens <b>Exchange-based Tokens</b>
-/centralized_exchange_token_cex	<b>Centralized Exchange Token</b>
-/xdai_ecosystem	<b>Gnosis Chain Ecosystem</b>
-/cosmos_ecosystem <b>Cosmos Ecosystem</b>
-/terra_ecosystem <b>Terra Ecosystem</b>
-/solana_ecosystem <b>Solana Ecosystem</b>
-/cardano_ecosystem <b>Cardano Ecosystem</b>
-/dot_ecosystem <b>Polkadot Ecosystem</b>
-/non_fungible_tokens_nft <b>Non-Fungible Tokens (NFT)</b>
-/meme_token	<b>Meme Tokens</b>
-/harmony_ecosystem <b>Harmony Ecosystem</b>
-/decentralized_exchange	<b>Decentralized Exchange Token</b>
-/governance	<b>Governance</b>
-/seigniorage <b>Seigniorage</b>
-/play_to_earn <b>Play To Earn</b>
-/metaverse <b>Metaverse</b>
-/gaming	<b>GameFi</b>
-/yield_farming <b>Yield Farming</b>
-/asset_backed_tokens <b>Asset-backed Tokens</b>
-/automated_market_maker_amm	<b>Automated Market Maker</b>
-/wrapped_tokens	<b>Wrapped-Tokens</b>
-/finance_banking <b>Finance / Banking</b>
-/privacy_coins <b>Privacy Coins</b>
-/internet_of_things_iot	<b>Internet of Things</b>
-/oracle	<b>Oracle</b>
-/lending_borrowing <b>Lending/Borrowing</b>
-/eth_2_0_staking <b>Eth 2.0 Staking</b>
-/storage <b>Storage</b>
-/decentralized_derivatives <b>Derivatives</b>
-/sports	<b>Sports</b>
-/olympus_pro <b>Olympus Pro</b>
-/masternodes <b>Masternodes</b>
-/yield_aggregator <b>Yield Aggregator</b>
-/analytics <b>Analytics</b>
-/celo_ecosystem	<b>Celo Ecosystem</b>
-/synthetic_assets <b>Synthetic Issuer</b>
-/yearn_yfi_partnerships_mergers	<b>Yearn Ecosystem</b>
-/oec_ecosystem <b>OEC Ecosystem</b>
-/decentralized_perpetuals <b>Perpetuals</b>
-/rebase_tokens <b>Rebase Tokens</b>
-/insurance <b>Insurance</b>
-/mev_protection	<b>MEV Protection</b>
-/zilliqa_ecosystem <b>Zilliqa Ecosystem</b>
-/prediction_markets	<b>Prediction Markets</b>
-/iotex_ecosystem <b>IoTeX Ecosystem</b>
-/social_money <b>Social Money</b>
-/decentralized_options <b>Options</b>
-/music <b>Music</b>
-/guild_scholarship <b>Guild and Scholarship</b>
-/daomaker_ecosystem	<b>DaoMaker Ecosystem</b>
-/synths	<b>Synths</b>
-/ohm_fork <b>Ohm Fork</b>
-/heco_chain_ecosystem <b>HECO Chain Ecosystem</b>
-/fan_token <b>Fan Token</b>
-/gambling <b>Gambling</b>
-/defi_index	<b>DeFi Index</b>
-/tourism <b>Tourism</b>
-/kardiachain_ecosystem <b>KardiaChain Ecosystem</b>
-/farming_as_a_service_faas	<b>Farming-as-a-Service (FaaS)</b>
-/aave_tokens <b>Aave Tokens</b>
-/tokenized_stock <b>Tokenized Stock</b>"""
+<b>Smart Contract Platform</b>
+/smart_contract_platform
+<b>BNB Chain Ecosystem</b>
+/binance_smart_chain
+<b>Polygon Ecosystem</b>
+/polygon_ecosystem
+<b>Avalanche Ecosystem</b>
+/avalanche_ecosystem 
+<b>Moonriver Ecosystem</b>
+/moonriver_ecosystem 
+<b>Fantom Ecosystem</b>
+/fantom_ecosystem 
+<b>Stablecoins</b>
+/stablecoins
+<b>Arbitrum Ecosystem</b>
+/arbitrum_ecosystem	
+<b>Near Protocol Ecosystem</b>
+/near_protocol_ecosystem 
+<b>Decentralized Finance (DeFi)</b>
+/decentralized_finance_defi	
+<b>Exchange-based Tokens</b>
+/exchange_based_tokens 
+<b>Centralized Exchange Token (CEX)</b>
+/centralized_exchange_token_cex	
+<b>Gnosis Chain Ecosystem</b>
+/xdai_ecosystem	
+<b>Cosmos Ecosystem</b>
+/cosmos_ecosystem 
+<b>Terra Ecosystem</b>
+/terra_ecosystem 
+<b>Solana Ecosystem</b>
+/solana_ecosystem 
+<b>Cardano Ecosystem</b>
+/cardano_ecosystem
+<b>Polkadot Ecosystem</b> 
+/dot_ecosystem 
+<b>Non-Fungible Tokens (NFT)</b>
+/non_fungible_tokens_nft 
+<b>Meme Tokens</b>
+/meme_token	
+<b>Harmony Ecosystem</b>
+/harmony_ecosystem 
+<b>Decentralized Exchange Token</b>
+/decentralized_exchange	
+<b>Governance</b>
+/governance	
+<b>Seigniorage</b>
+/seigniorage 
+<b>Play To Earn</b>
+/play_to_earn 
+<b>Metaverse</b>
+/metaverse
+<b>GameFi</b> 
+/gaming	
+<b>Yield Farming</b>
+/yield_farming  ###gang
+<b>Asset-backed Tokens</b>
+/asset_backed_tokens 
+<b>Automated Market Maker</b>
+/automated_market_maker_amm	
+<b>Wrapped-Tokens</b>
+/wrapped_tokens	
+<b>Finance / Banking</b>
+/finance_banking
+<b>Privacy Coins</b>
+/privacy_coins
+<b>Internet of Things</b>
+/internet_of_things_iot
+<b>Oracle</b>
+/oracle
+<b>Lending/Borrowing</b>
+/lending_borrowing
+<b>Eth 2.0 Staking</b>
+/eth_2_0_staking
+<b>Storage</b>
+/storage
+<b>Derivatives</b>
+/decentralized_derivatives
+<b>Sports</b>
+/sports
+<b>Olympus Pro</b>
+/olympus_pro
+<b>Masternodes</b>
+/masternodes
+<b>Yield Aggregator</b>
+/yield_aggregator
+<b>Analytics</b>
+/analytics
+<b>Celo Ecosystem</b>
+/celo_ecosystem
+<b>Synthetic Issuer</b>
+/synthetic_assets
+<b>Yearn Ecosystem</b>
+/yearn_yfi_partnerships_mergers
+<b>OEC Ecosystem</b>
+/oec_ecosystem
+<b>Perpetuals</b>
+/decentralized_perpetuals
+<b>Rebase Tokens</b>
+/rebase_tokens
+<b>Insurance</b>
+/insurance
+<b>MEV Protection</b>
+/mev_protection
+<b>Zilliqa Ecosystem</b>
+/zilliqa_ecosystem
+<b>Prediction Markets</b>
+/prediction_markets
+<b>IoTeX Ecosystem</b>
+/iotex_ecosystem
+<b>Social Money</b>
+/social_money
+<b>Options</b>
+/decentralized_options
+<b>Music</b>
+/music
+<b>Guild and Scholarship</b>
+/guild_scholarship
+<b>DaoMaker Ecosystem</b>
+/daomaker_ecosystem
+<b>Synths</b>
+/synths
+<b>Ohm Fork</b>
+/ohm_fork
+<b>HECO Chain Ecosystem</b>
+/heco_chain_ecosystem
+<b>Fan Token</b>
+/fan_token
+<b>Gambling</b>
+/gambling
+<b>DeFi Index</b>
+/defi_index
+<b>Tourism</b>
+/tourism
+<b>KardiaChain Ecosystem</b>
+/kardiachain_ecosystem
+<b>Farming-as-a-Service (FaaS)</b>
+/farming_as_a_service_faas
+<b>Aave Tokens</b>
+/aave_tokens
+<b>Tokenized Stock</b>
+/tokenized_stock"""
 
 
 categories_text = (f"""
-Выберите категорию которую хотите посмотреть:
+Ранг категории криптовалют основан на ее рыночной капитализации. 
+Примечание: некоторые криптовалюты могут попадать сразу в несколько категорий.
 
 {categories_commands}
 """)
+
+
+disclaimer = (
+    '⚠️ <b>ВАЖНЫЙ ДИСКЛЕЙМЕР:</b> \nКонтент, представленный в боте, '
+    'получен из сторонних источников и предназначен исключительно '
+    'для информационных целей. Мы не даем гарантий в отношении этого '
+    'контента, в том числе в отношении его актуальности и достоверности. '
+    '\n\nЭти материалы не следует воспринимать в качестве финансовых или '
+    'юридических советов. Используйте их на свой страх и риск только после '
+    'тщательного анализа, исследования и проверки. \n\nТрейдинг — это '
+    'высокорискованный вид деятельности, чреватый возможными убытками. '
+    'Посоветуйтесь с финансовым консультантом, прежде чем принимать какие-либо '
+    'решения. Содержимое бота не может считаться предложением или руководством к действию. '
+    '\n\n<b>Powered by</b> <a href="https://www.coingecko.com/ru/">CoinGecko</a>'
+)
+
+
+btc_text = '<b>Биткоин</b> — пиринговая платёжная система, использующая одноимённую' \
+           ' единицу для учёта операций. Для обеспечения функционирования и ' \
+           'защиты системы используются криптографические методы, но при это' \
+           'м вся информация о транзакциях между адресами системы доступна в' \
+           ' открытом виде. \nТаким образом, он может работать без необходимос' \
+           'ти в центральном органе, таком как банк или компания. Это не пох' \
+           'оже на выпущенные государством или фиатные валюты, такие как дол' \
+           'лары США или евро, в которых они контролируются центральным банк' \
+           'ом страны. Децентрализованный характер позволяет ему работать в ' \
+           'одноранговой сети, в которой пользователи могут отправлять средс' \
+           'тва друг другу, минуя посредников.'
+eth_text = '<b>Ethereum</b> — криптовалюта и платформа для создания децентрализованн' \
+           'ых онлайн-сервисов на базе блокчейна, работающих на базе смарт ко' \
+           'нтракта, программного кода в котором прописаны условия выполнения' \
+           ' контракта, когда они выполнены — автоматически происходит транза' \
+           'кция.'
+bnb_text = '<b>Binance Coin (BNB)</b> — это биржевой токен, созданный и выпущенный к' \
+           'риптовалютной биржей Binance, хотя в 2017 году компания начинала ' \
+           'только как криптобиржа, сегодня Binance распространила свои услуг' \
+           'и на множество различных сфер. Согласно веб-сайту компании, ее ми' \
+           'ссия — стать поставщиком инфраструктурных услуг для всей экосисте' \
+           'мы блокчейна.'
+sol_text = '<b>Solana</b> – это продвинутый блокчейн-проект с открытым исходным кодо' \
+           'м, который стремится использовать несколько прорывных технологий ' \
+           'для следующего поколения DApps. Разработчики  утверждают, что его' \
+           ' блокчейн способен поддерживать более 50 000 транзакций в секунду' \
+           ' (TPS) при пиковой нагрузке, что делает его, пожалуй, самым быстр' \
+           'ым блокчейном работающим в настоящее время. Для сравнения: это по' \
+           'чти в 1 000 раз быстрее Bitcoin (~ 5-7 TPS) и более чем в 3 000 р' \
+           'аз быстрее Ethereum (~ 15 TPS).'
+ada_text = '<b>Cardano (ADA)</b> — это децентрализованная платформа, которая позволя' \
+           'ет выполнять сложные программируемые трансферы ценностей безопасн' \
+           'ым и масштабируемым образом. Cardano разрабатывает платформу смар' \
+           'т-контрактов с более продвинутым функционалом, чем любой из ныне ' \
+           'существующих протоколов. Сообщается, в основе протокола лежит мно' \
+           'гоуровневый программный блокчейн стэк, который будет гибким, масш' \
+           'табируемым и разрабатывается с учетом самых строгих академических' \
+           ' и коммерческих стандартов ПО в отрасли.'
+xrp_text = '<b>XRP</b> был создан Ripple как быстрая, менее затратная и более масшта' \
+           'бируемая альтернатива как другим цифровым активам, так и существу' \
+           'ющим платформам денежных платежей, таким как SWIFT. Реестр Ripple' \
+           'Net поддерживается глобальным сообществом XRP, активным участнико' \
+           'м которого и является компания Ripple. \nXRP Ledger обрабатывает тр' \
+           'анзакции примерно каждые 3-5 секунд, или всякий раз, когда незави' \
+           'симые узлы-валидаторы приходят к консенсусу в отношении порядка и' \
+           ' действительности транзакций XRP. Этим он отличается от proof-of-' \
+           'work майнинг процесса Bitcoin (BTC). Валидатором Ripple может ста' \
+           'ть каждый. В настоящее время список состоит из Ripple, а также ун' \
+           'иверситетов, финансовых учреждений и других.'
+luna_text = '<b>Terra</b> — это блокчейн-протокол, стремится выделиться за счет испо' \
+            'льзования стейблкоинов с привязкой к фиату, заявляя, что она соче' \
+            'тает безграничные преимущества криптовалют с ежедневной стабильно' \
+            'стью цен на фиатные валюты. Он поддерживает привязку «один к одно' \
+            'му» с помощью алгоритма, который автоматически регулирует предлож' \
+            'ение стейблкоинов в зависимости от спроса. Это достигается путем ' \
+            'стимулирования держателей LUNA к обмену LUNA и стейблкоинов по вы' \
+            'годным обменным курсам по мере необходимости, чтобы либо увеличит' \
+            'ь, либо сократить предложение стейблкоинов в соответствии со спросом. '
+dot_text = '<b>Polkadot</b> — это многоцепочечный протокол сегментирования (sharding ' \
+           'multichain protocol) с открытым исходным кодом, который облегчает ' \
+           'кроссчейн передачу любых данных или типов активов, а не только ток' \
+           'енов, и таким образом обеспечивает совместимость широкому спектру ' \
+           'блокчейнов друг с другом. Такая операционная совместимость (intero' \
+           'perability) нацелена на создание полностью децентрализованной част' \
+           'ной сети, управляемой пользователями, а также на упрощение создани' \
+           'я новых приложений, систем и сервисов.'
+avax_text = '<b>Avalanche</b> — самая быстрая платформа смарт-контрактов в индустрии ' \
+            'блокчейнов, если судить по времени до завершения. Avalanche невер' \
+            'оятно быстр, дешев и экологичен. Любое приложение с поддержкой см' \
+            'арт-контрактов может превзойти своих конкурентов, развернув его в' \
+            ' Avalanche. AVAX — собственный токен Avalanche. Это дефицитный ак' \
+            'тив с жестким ограничением, который используется для оплаты комис' \
+            'сий, защиты платформы посредством ставок и обеспечения базовой ед' \
+            'иницы учета между несколькими подсетями, созданными в Avalanche.'
+doge_text = '<b>Dogecoin (DOGE)</b> основан на популярном интернет-меме «doge» и имее' \
+            'т на своем логотипе сиба-ину. Отличается от протокола проверки ра' \
+            'ботоспособности биткойн несколькими способами, одним из которых я' \
+            'вляется использование технологии Scrypt. У альткоина также есть в' \
+            'ремя блока 1 минута, а общий запас не ограничен, что означает, чт' \
+            'о количество Dogecoin, которое можно добыть, не ограничено. Испол' \
+            'ьзовался в основном как система чаевых на Reddit и Twitter для во' \
+            'знаграждения за создание или распространение качественного контен' \
+            'та.'
+matic_text = '<b>Polygon (ранее Matic Network)</b> — первая хорошо структурированная ' \
+             'и простая в использовании платформа для масштабирования Ethereum' \
+             ' и развития инфраструктуры. Polygon может похвастаться до 65 000' \
+             ' транзакций в секунду в одной боковой цепочке, а также приличным' \
+             ' временем подтверждения блока менее двух секунд. \nФреймворк также' \
+             ' позволяет создавать глобально доступные децентрализованные фина' \
+             'нсовые приложения на единой базовой цепочке блоков. MATIC, собст' \
+             'венный токен Polygon, представляет собой токен ERC-20 , работающ' \
+             'ий на блокчейне Ethereum. Токены используются для платежных услу' \
+             'г в Polygon и в качестве расчетной валюты между пользователями, ' \
+             'работающими в экосистеме Polygon.'
+link_text = '<b>Chainlink</b> представляет собой уровень абстракции блокчейна , котор' \
+            'ый позволяет использовать универсально связанные смарт-контракты.' \
+            ' Через децентрализованную сеть оракулов Chainlink позволяет блокч' \
+            'ейнам безопасно взаимодействовать с внешними потоками данных, соб' \
+            'ытиями и способами оплаты, предоставляя критически важную информа' \
+            'цию вне сети, необходимую для сложных смарт-контрактов, чтобы ста' \
+            'ть доминирующей формой цифрового соглашения. \nСеть Chainlink управ' \
+            'ляется большим сообществом поставщиков данных с открытым исходным' \
+            ' кодом, операторов узлов , разработчиков смарт-контрактов, исслед' \
+            'ователей, аудиторов безопасности и многих других. Компания уделяе' \
+            'т особое внимание обеспечению децентрализованного участия для все' \
+            'х операторов узлов и пользователей, желающих внести свой вклад в сеть.'
+near_text = '<b>NEAR Protocol</b> — это блокчейн первого уровня , который был разрабо' \
+            'тан как управляемая сообществом платформа облачных вычислений и у' \
+            'страняет некоторые ограничения, мешающие конкурирующим блокчейнам' \
+            ', такие как низкая скорость транзакций, низкая пропускная способн' \
+            'ость и плохая совместимость. Это обеспечивает идеальную среду для' \
+            ' DApps и создает удобную для разработчиков и пользователей платфо' \
+            'рму.'
+ltc_text = '<b>Litecoin (LTC)</b> — это криптовалюта, разработанная для обеспечения б' \
+           'ыстрых, безопасных и недорогих платежей за счет использования уник' \
+           'альных свойств технологии блокчейн. Его основное преимущество закл' \
+           'ючается в скорости и экономичности. Транзакции Litecoin обычно под' \
+           'тверждаются всего за несколько минут, а комиссия за транзакцию пра' \
+           'ктически незначительна. Это делает его привлекательной альтернатив' \
+           'ой btc в развивающихся странах, где плата за транзакции может быть' \
+           ' решающим фактором при выборе криптовалюты.'
+trx_text = '<b>TRON</b> — это операционная система на основе блокчейна, целью которой' \
+           ' является обеспечение пригодности этой технологии для повседневног' \
+           'о использования. В то время как Биткойн может обрабатывать до шест' \
+           'и транзакций в секунду, а Эфириум — до 25, TRON утверждает, что ег' \
+           'о сеть имеет пропускную способность до 2000 транзакций в секунду. ' \
+           '\nTRON позиционирует себя как среду, в которой создатели контента мо' \
+           'гут напрямую общаться со своей аудиторией. Этот проект лучше всего' \
+           ' описывается как децентрализованная платформа, ориентированная на ' \
+           'обмен контентом и развлечения — и с этой целью одним из его крупне' \
+           'йших приобретений стал сервис обмена файлами BitTorrent еще в 2018' \
+           ' году.'
+xlm_text = '<b>Stellar</b> — это открытая сеть, позволяющая перемещать и хранить день' \
+           'ги. Когда он был выпущен в июле 2014 года, одной из его целей было' \
+           ' расширение доступа к финансовым услугам за счет охвата людей в ми' \
+           'ре, не имеющих доступа к банковским услугам, но вскоре после этого' \
+           ' его приоритеты сместились на помощь финансовым фирмам в установле' \
+           'нии связей друг с другом с помощью технологии блокчейн. \nСобственны' \
+           'й токен сети служит мостом, который делает трансграничную торговлю' \
+           ' активами менее затратной. Все это направлено на то, чтобы бросить' \
+           ' вызов существующим платежным системам, которые часто взимают высо' \
+           'кую плату за аналогичную услугу.'
+vet_text = '<b>VeChain</b> — блокчейн-платформа для работы со смарт-контрактами, кото' \
+           'рая существует, чтобы разрушить традиционные бизнес-модели, и наиб' \
+           'олее известен своей работой в цепочке поставок — отрасли, которая ' \
+           'мало изменилась за десятилетия. Его работа по обеспечению децентра' \
+           'лизованного уровня доверия для многосторонних экосистем уже добила' \
+           'сь значительных успехов в работе с высокопоставленными клиентами и' \
+           ' государственными органами. \n<b>VET</b> — это токен Proof of Authority (Po' \
+           'A), требующий относительно низкой вычислительной мощности для обес' \
+           'печения сетевой безопасности по сравнению с таким протоколом, как ' \
+           'биткойн. Недавний отчет CTI показал, что годовой углеродный след V' \
+           'eChain невероятно мал и составляет всего 2,4% от выбросов при майн' \
+           'инге одного биткойна, что делает PoA невероятно эффективным механи' \
+           'змом консенсуса для защиты сети.'
+sand_text = '<b>The Sandbox</b> представляет собой виртуальный мир на основе блокчейн' \
+            'а , позволяющий пользователям создавать, покупать и продавать циф' \
+            'ровые активы в форме игры. Объединяя возможности децентрализованн' \
+            'ых автономных организаций (DAO) и не взаимозаменяемых токенов (NF' \
+            'T), песочница создает децентрализованную платформу для процветающ' \
+            'его игрового сообщества. \nОсновная миссия платформы Sandbox — успе' \
+            'шно внедрить технологию блокчейна в массовые игры. Платформа фоку' \
+            'сируется на содействии творческой модели «играй, чтобы заработать' \
+            '», которая позволяет пользователям одновременно быть и создателям' \
+            'и, и игроками. Песочница использует возможности технологии блокче' \
+            'йна, вводя служебный токен SAND, который облегчает транзакции на ' \
+            'платформе.'
+gala_text = '<b>Gala Games</b> стремится направить игровую индустрию в другое русло, ' \
+            'вернув игрокам контроль над своими играми. Миссия Gala Games — со' \
+            'здавать «блокчейн-игры, в которые вам действительно захочется игр' \
+            'ать». Проект хочет изменить тот факт, что игроки могут тратить со' \
+            'тни долларов на внутриигровые активы и бесчисленные часы, проведе' \
+            'нные за игрой, которые можно отнять у них одним нажатием кнопки. ' \
+            'Компания планирует вновь привнести творческое мышление в игры, пр' \
+            'едоставив игрокам контроль над играми и внутриигровыми активами с' \
+            ' помощью технологии блокчейн . Токен GALA работает на Ethereum и ' \
+            'блокчейне Binance Smart Chain (BSC). Сеть защищена собственным на' \
+            'бором узлов, называемых узлами основателя. Gala Games указывает н' \
+            'е более 50 000 узлов Founder, которые проверяют внутриигровые тра' \
+            'нзакции и защищают сеть.'
+oasis_text = '<b>Oasis Network (ROSE)</b> поддерживает высокий уровень масштабируемос' \
+             'ти, низкую плату за газ и монетизацию токенов. Он также направле' \
+             'н на улучшение функций конфиденциальности, чтобы облегчить испол' \
+             'ьзование конфиденциальных данных в DeFi. Он обеспечивает масштаб' \
+             'ируемость за счет разделения консенсуса и выполнения, что позвол' \
+             'яет нескольким ParaTimes обрабатывать транзакции параллельно и п' \
+             'редотвращает замедление более простых транзакций более сложными.'
+
+gas_url = 'https://ethgasstation.info/api/ethgasAPI.json?api-key=af9441a20e563f7810e23692518f2ce7d7d32ea1faca08ff2cb5fee42459'
+pred_gas = 'https://ethgasstation.info/api/predictTable.json?api-af9441a20e563f7810e23692518f2ce7d7d32ea1faca08ff2cb5fee42459'
+
+
+gas_text = 'За проведение любой транзакции и действия в блокчейне Ethereum взи' \
+           'мается комиссия, которую получает майнер. Майнеры сети подтверждаю' \
+           'т транзакции и решают, какие из них войдут в новый блок сети. Коми' \
+           'ссия за транзакцию исчисляется в газе, а оплачивается в эфире. Из ' \
+           'чего выходит, что газ — это «топливо» сети Ethereum, которое испол' \
+           'ьзуется для проведения транзакций, выполнения смарт-контрактов и з' \
+           'апуска DApps, а также для оплаты хранения данных.'
+
+coin_req = 'bitcoin,ethereum,binancecoin,solana,polkadot,ripple,cardano,terra-luna' \
+           ',avalanche-2,dogecoin,matic-network,chainlink,near,litecoin,tron,vecha' \
+           'in,stellar,oasis-network,gala,the-sandbox'
+
+info_list = [avax_text, bnb_text, btc_text, ada_text, link_text, doge_text, eth_text, gala_text, ltc_text, matic_text,
+             near_text, oasis_text, dot_text, xrp_text, sol_text, xlm_text, luna_text, sand_text, trx_text, vet_text]
+
+
+
+
