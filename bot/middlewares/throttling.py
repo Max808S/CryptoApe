@@ -1,34 +1,29 @@
-### TODO aiogram v3 ###
+from typing import Any, Awaitable, Callable, Dict, cast
 
-# from typing import Any, Awaitable, Callable, Dict
-
-# from aiogram import BaseMiddleware
-# from aiogram.dispatcher.event.handler import HandlerObject
-# from aiogram.types import Update
-# from cachetools import TTLCache
-
-# from bot.const import THROTTLE_TIME_SPIN, THROTTLE_TIME_OTHER
-
-# caches = {
-#     "spin": TTLCache(maxsize=10_000, ttl=THROTTLE_TIME_SPIN),
-#     "default": TTLCache(maxsize=10_000, ttl=THROTTLE_TIME_OTHER)
-# }
+from aiogram import BaseMiddleware
+from aiogram.dispatcher.event.handler import HandlerObject
+from aiogram.types import TelegramObject, Message
+from cachetools import TTLCache
 
 
-# class ThrottlingMiddleware(BaseMiddleware):
-#     async def __call__(
-#             self,
-#             handler: Callable[[Update, Dict[str, Any]], Awaitable[Any]],
-#             event: Update,
-#             data: Dict[str, Any],
-#     ) -> Any:
-#         real_handler: HandlerObject = data.get("handler")
-#         throttling_key = real_handler.flags.get("throttling_key")
-#         if throttling_key is not None and throttling_key in caches:
-#             # Поскольку мидлварь только для Message, то тип Update всегда Message.
-#             # И проверку if isinstance(event, Message) можно пропустить, хотя PyCharm будет ругаться
-#             if event.chat.id in caches[throttling_key]:
-#                 return
-#             else:
-#                 caches[throttling_key][event.chat.id] = None
-#         return await handler(event, data)
+class ThrottlingMiddleware(BaseMiddleware):
+    caches = {
+        "default": TTLCache(maxsize=10_000, ttl=5) # delay time
+        # "other": TTLCache(maxsize=10_000, ttl=THROTTLE_TIME_OTHER)
+    }
+
+    async def __call__(
+            self,
+            handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+            event: TelegramObject,
+            data: Dict[str, Any],
+    ) -> Any:
+        real_handler: HandlerObject = data.get("handler")
+        throttling_key = real_handler.flags.get("throttling_key")
+        if throttling_key is not None and throttling_key in self.caches:
+            event = cast(Message, event)  # Обещаем, что event будет иметь тип Message и только его
+            if event.chat.id in self.caches[throttling_key]:
+                return
+            else:
+                self.caches[throttling_key][event.chat.id] = None
+        return await handler(event, data)
