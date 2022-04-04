@@ -1,0 +1,1 @@
+from .coingecko import get_categories_list
