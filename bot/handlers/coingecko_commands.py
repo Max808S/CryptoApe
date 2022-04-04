@@ -1,3 +1,4 @@
+import re
 from aiogram import Router, F, types
 from aiogram.types import Message, CallbackQuery
 
@@ -5,11 +6,9 @@ from api_requests.coingecko.trending_coins import get_trending_coins
 from api_requests.coingecko.coingecko import get_price, get_cg_categories
 
 from api_requests.coingecko.token_json import (
-    dict_from_tokens_csv,
-    cg_tokens_keys,
-    cg_tokens_values,
-    dict_from_cg_categories_csv, 
-    cg_categories_values
+    dict_from_tokens_csv, cg_tokens_keys, cg_tokens_values,
+    dict_from_cg_categories_csv, cg_categories_values,
+    dict_with_token_ids, cg_token_extra_name
 )
 
 from keypads.keyboards import (
@@ -39,13 +38,17 @@ async def trend(message: types.Message) -> str:
     result = await get_trending_coins()
     full_res = (f'{trend_text}\n\n{result}')
     await message.delete()
+    # await message.answer("⚡")
+    # await message.answer("🔎")
+    await message.answer("🌟")
     await message.answer(full_res, reply_markup=mm_kb())
- 
+
 
 @coingecko_router.callback_query(F.data == "trend")
 async def inline_trend_button(query: CallbackQuery) -> str:
     result = await get_trending_coins()
     full_res = (f'{trend_text}\n\n{result}')
+    await query.message.answer("🔎")
     await query.message.edit_text(full_res)
     await query.message.edit_reply_markup(reply_markup=bmm_kb())
 
@@ -59,6 +62,7 @@ async def cg_categories(message: types.Message) -> str:
     for key, value in dict_from_cg_categories_csv.items():
         if value == message.text[1:]:
             result = await get_cg_categories(key)
+    await message.delete()
     await message.answer(result, reply_markup=ex_cat_kb())
 
 
@@ -67,36 +71,86 @@ async def cg_categories(message: types.Message) -> str:
 async def token_name(message: types.Message) -> str:
     """
     Checking the coin in the database (CSV COINS LIST) by name.
+    Usage example: /tron-bsc /wrapped-tron
     """
+    await message.answer("💱")
     result = await get_price(message.text[1:])
+    await message.delete()
+    await message.answer(result, reply_markup=mm_kb())
+
+
+@coingecko_router.message(commands=cg_token_extra_name)
+async def token_extra_id(message: types.Message) -> str:
+    """
+    Checking the coin in the database (CSV COINS LIST) by extra id.
+    Example: /tron_bsc /wrapped_tron, bitcoin, solana   /USED: "_"/
+    """
+    await message.answer("💱")
+    for key, value in dict_with_token_ids.items():
+        if value == message.text[1:]:
+            result = await get_price(key)
+    await message.delete()
     await message.answer(result, reply_markup=mm_kb())
 
 
 @coingecko_router.message(commands=cg_tokens_values)
 async def token_id(message: types.Message) -> str:
     """
-    Checking the coin in the database (CSV COINS LIST) by id.
+    Create a list if get 2+ coins
+    Usage example /SYMBOL/: btc, trx, eth, sol
     """
+    coins_id_list = []
     for key, value in dict_from_tokens_csv.items():
         if value == message.text[1:]:
-            result = await get_price(key)
-    await message.answer(result, reply_markup=mm_kb())
+            coins_id_list.append(key)
+    await message.delete()
+    if len(coins_id_list) >= 2:
+        await message.answer("🔎")
+        listToStr = '\n/'.join([str(elem).replace("-", "_") for elem in coins_id_list])
+        result = f"Pick your coin:\n/{listToStr}"
+        await message.answer(result, reply_markup=mm_kb)
+    else:
+        for token in coins_id_list:
+            token_result = await get_price(token)
+        await message.answer("💱")
+        await message.answer(token_result, reply_markup=mm_kb())
 
 
 # (TEXT) SEARCH TOKENS IN CSV BASE: token_name & token_id
-@coingecko_router.message(F.text.in_(cg_tokens_keys))
-async def text_token_name(message: types.Message) -> str:
-    result = await get_price(message.text)
-    await message.delete()
-    await message.answer(result, reply_markup=mm_kb())
-    
-    
 @coingecko_router.message(F.text.in_(cg_tokens_values))
 async def text_token_id(message: types.Message) -> str:
+    """
+    Usage example: bnb, sol, trx    # TODO create list for
+    """
     for key, value in dict_from_tokens_csv.items():
         if value == message.text:
             result = await get_price(key)
     await message.delete()
+    await message.answer("💱")
+    await message.answer(result, reply_markup=mm_kb())
+
+
+@coingecko_router.message(F.text.in_(cg_tokens_keys))
+async def text_token_name(message: types.Message) -> str:
+    """
+    Usage example: tron-bsc, wrapped-tron
+    """
+    result = await get_price(message.text)
+    await message.delete()
+    await message.answer("💱")
+    await message.answer(result, reply_markup=mm_kb())
+
+
+@coingecko_router.message(F.text.in_(cg_token_extra_name))
+async def text_token_extra_name(message: types.Message) -> str:
+    """
+    Usage example: tron_bsc, bitcoin, binancecoin
+    """
+    for key, value in dict_with_token_ids.items():
+        if value == message.text:
+            result = await get_price(key)
+    await message.delete()
+    await message.answer("💱")
     await message.answer(result, reply_markup=mm_kb())
 
 
@@ -273,4 +327,5 @@ async def echo(message: Message) -> str:
         f'{message.text}\n\n'
         '<b>Используйте</b> /help'
     )
+    await message.answer("❔")
     await message.answer(echo_text)
