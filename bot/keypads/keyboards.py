@@ -1,7 +1,19 @@
 from aiogram.types.inline_keyboard_button import InlineKeyboardButton
 from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
-
+from api_requests.coingecko.token_json import (
+    extra_dict_from_tokens_csv, extra_cg_token_keys, extra_cg_token_values
+)
 import secrets # testing
+
+
+# TODO 
+# def test_keyboard(currencies: list):
+#     inline_keyboard = [
+#         [
+#             InlineKeyboardButton(text=each, callback_data=each) for each in currencies
+#         ]
+#     ]
+#     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
 def get_back_main_menu_keyboards():
@@ -65,19 +77,44 @@ def get_categories_inline_keyboard() -> None:
     """
     inline_keyboard = [
         [
-            InlineKeyboardButton(text='Smart Contract Platform', callback_data='/smart-contract-platform'),
-            InlineKeyboardButton(text='BNB Chain Ecosystem', callback_data='/binance-smart-chain')
+            InlineKeyboardButton(text='Капитализация', callback_data='category_market_cap_desc'),
+            InlineKeyboardButton(text='Изменения за 24ч', callback_data='category_market_cap_change_24h_desc')
         ],
+        # [
+        #     InlineKeyboardButton(text='1', callback_data='qwe1'),
+        #     InlineKeyboardButton(text='2', callback_data='qwe2'),
+        #     InlineKeyboardButton(text='3', callback_data='qwe2'),
+        #     InlineKeyboardButton(text='4', callback_data='qwe2'),
+        #     InlineKeyboardButton(text='5', callback_data='qwe2')
+        # ],
         [
-            InlineKeyboardButton(text='Polygon Ecosystem', callback_data='/polygon-ecosystem'),
-            InlineKeyboardButton(text='Solana Ecosystem', callback_data='/solana-ecosystem')
-        ],
+            InlineKeyboardButton(text="Все категории", callback_data="full_categories"),
+            InlineKeyboardButton(text="Главное меню", callback_data="back_to_main_menu")
+        ]
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+
+
+def get_full_categories_inline_keyboard() -> None:
+    """
+    Get /categories keyboard buttons
+    """
+    inline_keyboard = [
+        # [
+        #     InlineKeyboardButton(text='Smart Contract Platform', callback_data='/smart-contract-platform'),
+        #     InlineKeyboardButton(text='BNB Chain Ecosystem', callback_data='/binance-smart-chain')
+        # ],
+        # [
+        #     InlineKeyboardButton(text='Polygon Ecosystem', callback_data='/polygon-ecosystem'),
+        #     InlineKeyboardButton(text='Solana Ecosystem', callback_data='/solana-ecosystem')
+        # ],
+        # [
+        #     InlineKeyboardButton(text='Meme Tokens', callback_data='/meme-token'),
+        #     InlineKeyboardButton(text='Metaverse', callback_data='/metaverse')
+        # ],
         [
-            InlineKeyboardButton(text='Meme Tokens', callback_data='/meme-token'),
-            InlineKeyboardButton(text='Metaverse', callback_data='/metaverse')
-        ],
-        [
-            InlineKeyboardButton(text="Назад", callback_data="back_to_main_menu")
+            InlineKeyboardButton(text="Категории", callback_data="categories"),
+            InlineKeyboardButton(text="Главное меню", callback_data="back_to_main_menu")
         ]
     ]
     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
@@ -117,7 +154,8 @@ def get_coin_inline_keyboard() -> None:
             InlineKeyboardButton(text='OASIS', callback_data='oasis')
         ],
         [
-            InlineKeyboardButton(text="Назад", callback_data="back_to_main_menu")
+            InlineKeyboardButton(text="Категории", callback_data="categories"),
+            InlineKeyboardButton(text="Главное меню", callback_data="back_to_main_menu")
         ]
     ]
     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
