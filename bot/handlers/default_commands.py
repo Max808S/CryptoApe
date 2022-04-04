@@ -3,14 +3,18 @@ import secrets
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 
+from api_requests.coingecko import get_categories_list
+
 from data.text_file import (
-    help_text, coins_text, categories_text, disclaimer, main_text
+    help_text, coins_text, full_categories_text, disclaimer, main_text,
+    short_categories_text
 )
 
 from keypads.keyboards import (
     get_main_keyboard as main_kb,
     get_coin_inline_keyboard as coin_kb,
-    get_categories_inline_keyboard as cat_kb
+    get_categories_inline_keyboard as cat_kb,
+    get_full_categories_inline_keyboard as full_cat
 )
 
 
@@ -19,14 +23,14 @@ user_router = Router(name=__name__)
 
 
 # MENU BUTTONS:
-@user_router.message(F.text == "Монеты")
-async def coins_button(message: Message) -> None:
-    await message.answer(coins_text, reply_markup=coin_kb())
+# @user_router.message(F.text == "Монеты")
+# async def coins_button(message: Message) -> None:
+#     await message.answer(coins_text, reply_markup=coin_kb())
 
 
-@user_router.message(F.text == "Категории")
-async def categories_button(message: Message) -> None:
-    await message.answer(categories_text, reply_markup=cat_kb())
+# @user_router.message(F.text == "Категории")
+# async def categories_button(message: Message) -> None:
+#     await message.answer(categories_text, reply_markup=cat_kb())
 
 
 # INLINE MENU BUTTONS:
@@ -36,11 +40,45 @@ async def inline_coins_button(query: CallbackQuery) -> str:
     await query.message.edit_reply_markup(reply_markup=coin_kb())
 
 
+##### TODO ######################################################
+# short answer
 @user_router.callback_query(F.data == "categories")
 async def inline_categories_button(query: CallbackQuery) -> str:
-    await query.message.edit_text(categories_text)
+    await query.message.edit_text(short_categories_text)
     await query.message.edit_reply_markup(reply_markup=cat_kb())
+
+
+# detailed answer
+@user_router.callback_query(F.data == "full_categories")
+async def inline_full_categories_button(query: CallbackQuery) -> str:
+    await query.message.edit_text(full_categories_text)
+    await query.message.edit_reply_markup(reply_markup=full_cat())
     
+
+# categories: market_cap_desc
+@user_router.callback_query(F.data == "category_market_cap_desc")
+async def inline_categories_button(query: CallbackQuery) -> str:
+    result = await get_categories_list("market_cap_desc")
+    await query.message.edit_text(result)
+    await query.message.edit_reply_markup(reply_markup=cat_kb())
+
+
+# categories: market_cap_change_24h_desc
+@user_router.callback_query(F.data == "category_market_cap_change_24h_desc")
+async def inline_categories_button(query: CallbackQuery) -> str:
+    result = await get_categories_list("market_cap_change_24h_desc")
+    await query.message.edit_text(result)
+    await query.message.edit_reply_markup(reply_markup=cat_kb())
+
+
+@user_router.callback_query(F.data == "categories")
+async def inline_categories_button(query: CallbackQuery) -> str:
+    result = await get_categories_list("market_cap_desc")
+    await query.message.edit_text(result)
+    await query.message.edit_reply_markup(reply_markup=cat_kb())
+
+#################################################################
+
 
 @user_router.callback_query(F.data == "back_to_main_menu")
 async def back_button(query: CallbackQuery) -> str:
@@ -73,6 +111,7 @@ async def cmd_help(message: Message) -> str:
     /HELP bot command
     """
     await message.delete()
+    await message.answer("🤖")
     await message.answer(help_text)
 
 
@@ -82,16 +121,29 @@ async def cmd_coins(message: Message) -> str:
     /COINS bot command
     """
     await message.delete()
+    await message.answer("💎")
     await message.answer(coins_text, reply_markup=coin_kb())
 
 
+# CATEGORIES
 @user_router.message(commands="categories")
 async def cmd_categories(message: Message) -> str:
     """
     /CATEGORIES bot command
     """
     await message.delete()
-    await message.answer(categories_text, reply_markup=cat_kb())
+    await message.answer("📂")
+    result = await get_categories_list("market_cap_desc")
+    await message.answer(result, reply_markup=cat_kb())
+
+# @user_router.message(commands="categories")
+# async def cmd_categories(message: Message) -> str:
+#     """
+#     /CATEGORIES bot command
+#     """
+#     await message.delete()
+#     await message.answer("📂")
+#     await message.answer(short_categories_text, reply_markup=cat_kb())
 
 
 # EDITOR TESTING
