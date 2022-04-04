@@ -7,15 +7,16 @@ async def get_trending_coins():
     in the last 24 hours (Ordered by most popular first)
     """
     async with aiohttp.ClientSession() as session:
-        async with session.get('https://api.coingecko.com/api/v3/search/trending') as response:
+        async with session.get("https://api.coingecko.com/api/v3/search/trending") as response:
             trend_coins = await response.json()
 
         trend_list = []
         
-        for coins in trend_coins['coins']:
+        for coins in trend_coins["coins"]:
             name = coins["item"]["name"]
             symbol = coins["item"]["symbol"]
             cap = coins["item"]["market_cap_rank"]
-            trend_list.append(f'#{cap}   /{symbol.lower()}  -  {name}')
+            
+            trend_list.append(f'#{cap} - /{symbol.lower()} - <b>{name.upper()}</b>')
         
         return('\n'.join(trend_list))
