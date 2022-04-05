@@ -1,9 +1,8 @@
-import secrets
-
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 
 from api_requests.coingecko import get_categories_list
+from api_requests.gas_gwei import gas_tracker
 
 from data.text_file import (
     help_text, coins_text, full_categories_text, disclaimer, main_text,
@@ -14,7 +13,9 @@ from keypads.keyboards import (
     get_main_keyboard as main_kb,
     get_coin_inline_keyboard as coin_kb,
     get_categories_inline_keyboard as cat_kb,
-    get_full_categories_inline_keyboard as full_cat
+    get_full_categories_inline_keyboard as full_cat,
+    get_extra_categories_keyboards as ex_cat_kb,
+    get_back_main_menu_keyboards as bmm_kb
 )
 
 
@@ -45,7 +46,7 @@ async def inline_coins_button(query: CallbackQuery) -> str:
 @user_router.callback_query(F.data == "categories")
 async def inline_categories_button(query: CallbackQuery) -> str:
     await query.message.edit_text(short_categories_text)
-    await query.message.edit_reply_markup(reply_markup=cat_kb())
+    await query.message.edit_reply_markup(reply_markup=cat_kb()) # TODO
 
 
 # detailed answer
@@ -75,7 +76,7 @@ async def inline_categories_button(query: CallbackQuery) -> str:
 async def inline_categories_button(query: CallbackQuery) -> str:
     result = await get_categories_list("market_cap_desc")
     await query.message.edit_text(result)
-    await query.message.edit_reply_markup(reply_markup=cat_kb())
+    await query.message.edit_reply_markup(reply_markup=ex_cat_kb())
 
 #################################################################
 
@@ -145,14 +146,25 @@ async def cmd_categories(message: Message) -> str:
 #     await message.answer("📂")
 #     await message.answer(short_categories_text, reply_markup=cat_kb())
 
+# GAS GWEI
+@user_router.message(commands="gas")
+async def cmd_gas(message: Message) -> str:
+    """
+    /GAS bot command
+    """
+    await message.delete()
+    result = await gas_tracker()
+    await message.answer(result, reply_markup=bmm_kb(), disable_web_page_preview = True)
 
-# EDITOR TESTING
-@user_router.callback_query(F.data == "test")
-async def inline_test_button(query: CallbackQuery) -> str:
-    await query.message.edit_text(text=secrets.token_urlsafe(4))
-    await query.message.edit_reply_markup(reply_markup=main_kb())
+
+@user_router.callback_query(F.data == "gas_gwei")
+async def inline_coins_button(query: CallbackQuery) -> str:
+    result = await gas_tracker()
+    await query.message.edit_text(result, disable_web_page_preview = True)
+    await query.message.edit_reply_markup(reply_markup=bmm_kb())
 
 
+# Testing user_router
 @user_router.message(commands="user", flags=flags)
 async def cmd_user(message: Message) -> str:
     await message.answer("This is a router for users")

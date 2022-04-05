@@ -65,7 +65,7 @@ def get_main_keyboard() -> None:
         ],
         [
             InlineKeyboardButton(text="Тренд", callback_data="trend"),
-            InlineKeyboardButton(text=secrets.token_urlsafe(4), callback_data="test")
+            InlineKeyboardButton(text="Газ (gwei)", callback_data="gas_gwei")
         ]
     ]
     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)

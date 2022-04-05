@@ -6,6 +6,9 @@ from dataclasses import dataclass
 class TgBot:
     token: str
     admin: int
+    etherscan: str
+    gas_staion: str
+
 
 @dataclass
 class Config:
@@ -19,6 +22,8 @@ def load_config():
     return Config(
         tg_bot=TgBot(
             token=env.str("BOT_TOKEN"),
-            admin=env.int("ADMINS") 
+            admin=env.int("ADMINS"),
+            etherscan=env.str("ETHERSCAN_KEY"),
+            gas_staion=env.str("ETH_GAS_STATION_KEY")
         )
     )
