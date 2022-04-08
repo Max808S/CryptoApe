@@ -1,7 +1,7 @@
 from aiogram import Router, F, types
 from aiogram.types import Message, CallbackQuery
 
-from api_requests.coingecko.coingecko import get_price, get_cg_categories, get_trending_coins
+from api_requests.coingecko.coingecko import get_price, get_categories_data, get_trending_coins
 
 from api_requests.coingecko.token_json import (
     dict_from_tokens_csv, cg_tokens_keys, cg_tokens_values,
@@ -59,7 +59,7 @@ async def cg_categories(message: types.Message) -> str:
     await message.answer("📂")
     for key, value in dict_from_cg_categories_csv.items():
         if value == message.text[1:]:
-            result = await get_cg_categories(key)
+            result = await get_categories_data(key)
     await message.answer(result, reply_markup=ex_cat_kb())
 
 
