@@ -9,6 +9,7 @@ async def set_bot_commands(bot: Bot):
             BotCommand(command="coins", description="Криптовалюты"),
             BotCommand(command='categories', description='Категории'),
             BotCommand(command="trend", description="Топ-7 поиска за 24ч."),
+            BotCommand(command='gas', description='Получить текущую цену gwei'),
             BotCommand(command="start", description="Перезапустить бота")
         ]
     await bot.set_my_commands(commands=commands)

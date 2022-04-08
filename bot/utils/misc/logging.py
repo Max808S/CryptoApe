@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 
-log_folder = Path.home().joinpath("logs")
+log_folder = Path.home().joinpath("/Users/keyglock/Documents/python/CryptoCurrency/logs")
 Path(log_folder).mkdir(parents=True, exist_ok=True)
 log_file = log_folder.joinpath("logs_tgbot.log")
 
