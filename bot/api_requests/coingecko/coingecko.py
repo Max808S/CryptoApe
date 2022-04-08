@@ -88,9 +88,36 @@ async def get_price(token) -> str:
         return total_info
 
 
-async def get_cg_categories(category):
+async def get_categories_list() -> str:
     """
-    Getting cg categories
+    List all categories
+    """
+    async with aiohttp.ClientSession() as session:
+        url = "https://api.coingecko.com/api/v3/coins/categories/list"
+        
+        async with session.get(url) as response:
+            categories_data = await response.json()
+
+        categories_list = []
+        for item in categories_data:
+            category_id = item["category_id"]
+            category_name = item["name"]
+            # categories_list.append(
+            #     f"<b>{category_name}</b>\n/{category_id.replace('-','_')}"
+            # )
+            categories_list.append(
+                f"/{category_id.replace('-','_')}"
+            )
+        result = ('\n'.join(categories_list))
+        final_result = (
+            f"{result}"
+        )
+    return final_result
+
+
+async def get_categories_data(category):
+    """
+    List all categories with market data
     """
     async with aiohttp.ClientSession() as session:
         url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&'\
@@ -107,25 +134,19 @@ async def get_cg_categories(category):
 
         categories_dict = dict()
         categories_list = []
- 
+        
         for unit in categories_resp:
             categories_id =  unit["id"]
             categories_name = unit["name"]
             categories_market_cap = int(unit["market_cap"])
             categories_volume = int(unit["volume_24h"])
             categories_market_cap_change_24h = unit["market_cap_change_24h"]
+
             categories_dict[categories_id] = [
                 categories_name, categories_market_cap, 
                 categories_volume, categories_market_cap_change_24h
             ]
-        
-        category_extra_list = categories_dict[category]
-        category_name = category_extra_list[0]
-        category_market_cap = "{:,}".format(category_extra_list[1]).replace(",", " ")
-        category_volume = "{:,}".format(category_extra_list[2]).replace(",", " ")
-        category_market_cap_change = float(("{:.1f}".format(category_extra_list[3]).replace(",", " ")))
-        emoji_market_cap_change_24h = ('📈' if category_market_cap_change > 0 else '📉')
-
+            
         for item in categories_data[:15]:
             coin_name = item["name"]
             coin_symbol = item["symbol"]
@@ -133,38 +154,47 @@ async def get_cg_categories(category):
             high_price = "{0:,}".format(current_price).replace(",", " ")
             low_price = "{:.2f}".format(current_price)
             very_low_price = "{:.5f}".format(current_price)
-        
             formatted_current_price = (
                 very_low_price if current_price < 0.009 else (
                     low_price if len(str(current_price)) > 5 else high_price
                 )
             )
-
             categories_list.append(
                 f'/{coin_symbol} <b>{coin_name}</b> - {formatted_current_price} $'
             )
-        result = ('\n'.join(categories_list))
+            result = ('\n'.join(categories_list))
 
-        final_result = (
+        if category in categories_dict.keys():
+            category_extra_list = categories_dict[category]
+            category_name = category_extra_list[0]
+            category_market_cap = "{:,}".format(category_extra_list[1]).replace(",", " ")
+            category_volume = "{:,}".format(category_extra_list[2]).replace(",", " ")
+            category_market_cap_change = float(("{:.1f}".format(category_extra_list[3]).replace(",", " ")))
+            emoji_market_cap_change_24h = ('📈' if category_market_cap_change > 0 else '📉')
+            final_result = (
             f"Лучшие валюты в категории \n<b>{category_name}</b>\n/{category.replace('-', '_')}\n\n"
             f"📊 Рыночная капитализация: \n"
             f"<b>$ {category_market_cap}</b> {emoji_market_cap_change_24h} <b>{category_market_cap_change}%</b>\n"
             f"📊 Объем торгов за 24 часа: <b>\n$ {category_volume}</b>\n\n"
             f"{result}"
         )
+        else: 
+            final_result = (
+            f"Лучшие валюты в категории {category}:\n\n{result}"
+        )
     return final_result
         
 
-async def get_categories_list(order):
+async def get_categories_list_data(order):
     async with aiohttp.ClientSession() as session:
         url = "https://api.coingecko.com/api/v3/coins/categories?order="+order
 
         async with session.get(url) as response:
-                categories_list = await response.json()
+            categories_list = await response.json()
 
         info_list = []
         
-        for item in categories_list[:20]:
+        for item in categories_list[:10]:
             coin_id = item["id"]
             coin_name = item["name"]
             market_cap = int(item["market_cap"])
@@ -189,8 +219,7 @@ async def get_categories_list(order):
         
         final_page = ('\n'.join(info_list))
         result = (
-            f'Категории сортированые по <b>«{order}»</b>:\n\n'
-            f'{final_page.replace("-", "_")}'
+            f"{final_page.replace('-', '_')}"
             )
     return result
 
