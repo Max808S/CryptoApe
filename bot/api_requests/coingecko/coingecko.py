@@ -1,32 +1,33 @@
 import aiohttp
-from utils.misc.logging import logger
 
 
-async def get_price(token) -> str:
+async def get_price(token: str) -> str:
     """
     Getting token current price and another data
     """
     async with aiohttp.ClientSession() as session: 
-        url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&'\
-            'ids='+token+'&order=market_cap_desc&per_page=100&page=1&sparkline'\
-            '=false&price_change_percentage=24h%2C7d%2C30d'
+        url = (
+            "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&"
+            "ids="+token+"&order=market_cap_desc&per_page=100&page=1&sparkline"
+            "=false&price_change_percentage=24h%2C7d%2C30d"
+        )
 
         async with session.get(url) as response:
             coin_data = await response.json()
             
-            name = coin_data[0]['name']
-            symbol = coin_data[0]['symbol'].upper()
-            coin_cap_rank = coin_data[0]['market_cap_rank']
-            current_price = coin_data[0]['current_price'] 
-            market_cap = coin_data[0]['market_cap']
-            total_volume = coin_data[0]['total_volume']
-            high_24h = coin_data[0]['high_24h']
-            low_24h = coin_data[0]['low_24h']
-            ath = coin_data[0]['ath']
-            ath_date = coin_data[0]['ath_date']
-            percent_change_24h = coin_data[0]['price_change_percentage_24h_in_currency']
-            percent_change_7d = coin_data[0]['price_change_percentage_7d_in_currency']
-            percent_change_30d = coin_data[0]['price_change_percentage_30d_in_currency']
+            name = coin_data[0]["name"]
+            symbol = coin_data[0]["symbol"].upper()
+            coin_cap_rank = coin_data[0]["market_cap_rank"]
+            current_price = coin_data[0]["current_price"] 
+            market_cap = coin_data[0]["market_cap"]
+            total_volume = coin_data[0]["total_volume"]
+            high_24h = coin_data[0]["high_24h"]
+            low_24h = coin_data[0]["low_24h"]
+            ath = coin_data[0]["ath"]
+            ath_date = coin_data[0]["ath_date"]
+            percent_change_24h = coin_data[0]["price_change_percentage_24h_in_currency"]
+            percent_change_7d = coin_data[0]["price_change_percentage_7d_in_currency"]
+            percent_change_30d = coin_data[0]["price_change_percentage_30d_in_currency"]
             
             formatted_coin_rank = "❓" if coin_cap_rank == None else coin_cap_rank
             h24_emoji = "⚠️" if percent_change_24h == None else ("📈" if percent_change_24h > 0 else "📉")
@@ -35,30 +36,30 @@ async def get_price(token) -> str:
             
             # current price
             formatted_current_price = "❓" if current_price == None else (
-                ('{:.8f}'.format(current_price)) if current_price < 0.0009 else (
-                    '{0:,}'.format(current_price).replace(',', ' ')
+                ("{:.8f}".format(current_price)) if current_price < 0.0009 else (
+                    "{0:,}".format(current_price).replace(",", " ")
                 )
             )
             
             # token stats
             formatted_market_cap = "❓" if market_cap == None else (
-                "❓" if market_cap == 0 else ('{0:,}'.format(market_cap).replace(',', ' '))
+                "❓" if market_cap == 0 else ("{0:,}".format(market_cap).replace(",", " "))
             )
             formatted_volume = "❓" if total_volume == None else (
-                "❓" if total_volume == 0 else ('{0:,}'.format(total_volume).replace(',', ' '))
+                "❓" if total_volume == 0 else ("{0:,}".format(total_volume).replace(",", " "))
             )
 
             # maximum and minimum price per 24h
             formatted_high_24h = "❓" if high_24h == None else (
-                ('{:.8f}'.format(high_24h)) if high_24h < 0.0009 else ('{0:,}'.format(high_24h).replace(',', ' '))
+                ("{:.8f}".format(high_24h)) if high_24h < 0.0009 else ("{0:,}".format(high_24h).replace(",", " "))
             )
             formatted_low_24h = "❓" if low_24h == None else (
-                ('{:.8f}'.format(low_24h)) if low_24h < 0.0009 else ('{0:,}'.format(low_24h).replace(',', ' '))
+                ("{:.8f}".format(low_24h)) if low_24h < 0.0009 else ("{0:,}".format(low_24h).replace(",", " "))
             )
             
             # ath
             formatted_ath = "❓" if ath == None else (
-                ('{:.8f}'.format(ath)) if ath < 0.0009 else ('{0:,}'.format(ath).replace(',', ' '))
+                ("{:.8f}".format(ath)) if ath < 0.0009 else ("{0:,}".format(ath).replace(",", " "))
             )
             formatted_ath_date = "❓" if ath_date == None else ath_date.replace("T"," ").split(" ")[0]
             
@@ -68,24 +69,20 @@ async def get_price(token) -> str:
             formatted_change_30d = "❓" if percent_change_30d == None else float("{:.1f}".format(percent_change_30d))
             
             total_info = (
-                f'{name} - <b>{symbol}</b>  🏅 - {formatted_coin_rank}\n'
-                f'\n'
-                f'💵 <b>Текущая цена:</b> {formatted_current_price} <b>$</b>\n'
-                f'\n'
-                f'<b>Максимум и минимум за 24ч:</b>\n'
-                f'📈 {formatted_high_24h} <b>$</b>  📉 {formatted_low_24h} <b>$</b>\n'
-                f'<b>Исторический максимум:</b> '
-                f'\n📈 {formatted_ath} <b>$</b> - {formatted_ath_date}\n\n'
-                f'📊 <b>Капитализация:</b> \n{formatted_market_cap} <b>$</b>\n'
-                f'📊 <b>Объём за 24ч:</b> \n{formatted_volume} <b>$</b>\n'
-                f'\n'
-                f'Изменения цены в %: \n'
-                f'{h24_emoji} <b>24 ч:</b>  {formatted_change_24h}%\n'
-                f'{d7_emoji} <b>7 дней:</b> {formatted_change_7d}%\n'
-                f'{d30_emoji} <b>30 дней:</b> {formatted_change_30d}%\n'
+                f"{name} - <b>{symbol}</b>  🏅 - {formatted_coin_rank}\n\n"
+                f"💵 <b>Текущая цена:</b> {formatted_current_price} <b>$</b>\n\n"
+                f"<b>Максимум и минимум за 24ч:</b>\n"
+                f"📈 {formatted_high_24h} <b>$</b>  📉 {formatted_low_24h} <b>$</b>\n"
+                f"<b>Исторический максимум:</b> "
+                f"\n📈 {formatted_ath} <b>$</b> - {formatted_ath_date}\n\n"
+                f"📊 <b>Капитализация:</b> \n{formatted_market_cap} <b>$</b>\n"
+                f"📊 <b>Объём за 24ч:</b> \n{formatted_volume} <b>$</b>\n\n"
+                f"Изменения цены в %:\n"
+                f"{h24_emoji} <b>24 ч:</b>  {formatted_change_24h}%\n"
+                f"{d7_emoji} <b>7 дней:</b> {formatted_change_7d}%\n"
+                f"{d30_emoji} <b>30 дней:</b> {formatted_change_30d}%\n"
                 )
-        logger.info(f"Getting stats for {token}")
-        return total_info
+    return total_info
 
 
 async def get_categories_list() -> str:
@@ -108,21 +105,23 @@ async def get_categories_list() -> str:
             categories_list.append(
                 f"/{category_id.replace('-','_')}"
             )
-        result = ('\n'.join(categories_list))
+        result = ("\n".join(categories_list))
         final_result = (
             f"{result}"
         )
     return final_result
 
 
-async def get_categories_data(category):
+async def get_categories_data(category: str) -> str:
     """
     List all categories with market data
     """
     async with aiohttp.ClientSession() as session:
-        url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&'\
-            'category='+str(category)+'&order=market_cap_desc&per_page=100&page=1&s'\
-            'parkline=false&price_change_percentage=1h%2C24h%2C7d'
+        url = (
+            "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&"
+            "category="+str(category)+"&order=market_cap_desc&per_page=100&page=1&s"
+            "parkline=false&price_change_percentage=1h%2C24h%2C7d"
+        )
         
         categories_url = "https://api.coingecko.com/api/v3/coins/categories"
 
@@ -160,9 +159,9 @@ async def get_categories_data(category):
                 )
             )
             categories_list.append(
-                f'/{coin_symbol} <b>{coin_name}</b> - {formatted_current_price} $'
+                f"/{coin_symbol} <b>{coin_name}</b> - {formatted_current_price} $"
             )
-            result = ('\n'.join(categories_list))
+            result = ("\n".join(categories_list))
 
         if category in categories_dict.keys():
             category_extra_list = categories_dict[category]
@@ -185,7 +184,7 @@ async def get_categories_data(category):
     return final_result
         
 
-async def get_categories_list_data(order):
+async def get_categories_list_data(order) -> str:
     async with aiohttp.ClientSession() as session:
         url = "https://api.coingecko.com/api/v3/coins/categories?order="+order
 
@@ -217,14 +216,14 @@ async def get_categories_list_data(order):
             #     f"{formatted_volume_24h} <b>$</b>"         
             # )
         
-        final_page = ('\n'.join(info_list))
+        final_page = ("\n".join(info_list))
         result = (
             f"{final_page.replace('-', '_')}"
-            )
+        )
     return result
 
 
-async def get_trending_coins():
+async def get_trending_coins() -> str:
     """
     Top-7 trending coins on CoinGecko as searched by users 
     in the last 24 hours (Ordered by most popular first)
@@ -239,7 +238,8 @@ async def get_trending_coins():
             name = coins["item"]["name"]
             symbol = coins["item"]["symbol"]
             cap = coins["item"]["market_cap_rank"]
-            
-            trend_list.append(f'#{cap} - /{symbol.lower()} - <b>{name.upper()}</b>')
-        
-        return('\n'.join(trend_list))
+    
+            trend_list.append(
+                f"#{cap} - /{symbol.lower()} - <b>{name.upper()}</b>"
+            )
+    return("\n".join(trend_list))
