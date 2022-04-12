@@ -1,9 +1,18 @@
 from aiogram.types.inline_keyboard_button import InlineKeyboardButton
 from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
-from api_requests.coingecko.token_json import (
-    extra_dict_from_tokens_csv, extra_cg_token_keys, extra_cg_token_values
-)
-import secrets # testing
+
+
+
+def get_advanced_search_keyboard(query: str):
+    """
+    TODO
+    """
+    inline_keyboard = [
+        [
+            InlineKeyboardButton(text="Расширенный поиск", callback_data=query)
+        ]
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
 # TODO 

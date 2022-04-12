@@ -35,9 +35,9 @@ async def main() -> None:
     # Register middleware for throttling
     dp.message.middleware(ThrottlingMiddleware())
 
-    # Notification for admins about the start of the bot TODO async def on_startup(dp): 
+    # Admin notification about bot launch
     await on_startup_notify(bot)
-    
+
     # Register /-commands
     await set_bot_commands(bot)
 
@@ -45,7 +45,7 @@ async def main() -> None:
         await dp.start_polling(
             bot, 
             allowed_updates=dp.resolve_used_update_types()
-        ) # on_startup=on_startup
+        )
     finally:
         await bot.session.close()
 

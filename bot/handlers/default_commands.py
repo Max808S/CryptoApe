@@ -82,26 +82,12 @@ async def cmd_coins(message: Message) -> str:
 async def inline_coins_button(query: CallbackQuery) -> str:
     """
     Get coins menu with inline button
-    Usage: press [coins] button
+    Usage: press [Coins] button
     """
     await query.message.edit_text(coins_text)
     await query.message.edit_reply_markup(reply_markup=coin_kb())
     logger.info(
         f"'COINS' inline menu for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@user_router.callback_query(F.data == "back_to_main_menu")
-async def back_button(query: CallbackQuery) -> str:
-    """
-    Back to main menu with inline button
-    Usage: press [Main menu] button
-    """
-    await query.message.edit_text(main_text)
-    await query.message.edit_reply_markup(reply_markup=main_kb())
-    logger.info(
-        f"'MAIN MENU' for USER: {query.from_user.full_name} "
         f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
     )
 
@@ -205,6 +191,21 @@ async def inline_coins_button(query: CallbackQuery) -> str:
     await query.message.edit_reply_markup(reply_markup=bmm_kb())
     logger.info(
         f"'GAS' data for USER: {query.from_user.full_name} "
+        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
+    )
+
+
+# ADDITIONAL BUTTON
+@user_router.callback_query(F.data == "back_to_main_menu")
+async def back_button(query: CallbackQuery) -> str:
+    """
+    Back to main menu with inline button
+    Usage: press [Main menu] button
+    """
+    await query.message.edit_text(main_text)
+    await query.message.edit_reply_markup(reply_markup=main_kb())
+    logger.info(
+        f"'MAIN MENU' for USER: {query.from_user.full_name} "
         f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
     )
 

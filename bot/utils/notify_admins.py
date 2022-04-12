@@ -9,7 +9,7 @@ async def on_startup_notify(bot: Bot) -> None:
         config = load_config()
         admin = config.tg_bot.admin
         await bot.send_message(admin, "🤖")
-        await bot.send_message(admin, f'Привет 👋🏻 Я включился!')
-        logging.info(f'ADMINS ID: {admin} are notified about the start of the bot!')
+        await bot.send_message(admin, f"Привет 👋🏻")
+        logging.info(f"ADMIN ID: {admin} are notified about bot launch!")
     except Exception as ex:
         logging.exception(ex)
