@@ -85,6 +85,43 @@ async def get_price(token: str) -> str:
     return total_info
 
 
+async def cg_searcher(query: str) -> str:
+    """
+    Search for coins, categories and markets listed on CoinGecko ordered by largest Market Cap first
+    """
+    async with aiohttp.ClientSession() as session:
+        url = "https://api.coingecko.com/api/v3/search?query="+query
+        
+        async with session.get(url) as response:
+            response_data = await response.json()
+        
+        coins_list = []
+        categories_list = []
+        exchanges_list = []
+
+        for coin in response_data["coins"]:
+            token_id = coin["id"]
+            token_name = coin["name"]
+            token_symbol = coin["symbol"]
+            token_rank = coin["market_cap_rank"]
+            coins_list.append(
+                f"{'❓' if token_rank == None else token_rank} 🏅  <b>{token_symbol.upper()}</b> - {token_name}\n"
+                f"/{token_id.replace('-', '_')}\n"
+            )
+        pre_result = ("\n".join(coins_list))
+        
+        if not coins_list:
+            result = (
+                f"По запросу <b>{query}</b> ничего не найдено!"
+            )
+        else:
+            result = (
+                f"По запросу <b>{query}</b> найдено {len(coins_list)} монет:\n\n"
+                f"{pre_result}"
+            )
+    return str(result)
+
+
 async def get_categories_list() -> str:
     """
     List all categories
