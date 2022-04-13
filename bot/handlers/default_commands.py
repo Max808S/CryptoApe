@@ -42,8 +42,8 @@ async def cmd_start(message: Message) -> str:
         reply_markup=main_kb()
     )
     logger.info(
-        f"'START' menu for USER: {message.from_user.full_name} "
-        f"USERNAME: {message.from_user.username} ID: {message.from_user.id}"
+        f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+        f"ID: {message.from_user.id} getting 'START' menu"
     )
 
 
@@ -57,8 +57,8 @@ async def cmd_help(message: Message) -> str:
     await message.answer("🤖")
     await message.answer(help_text, disable_web_page_preview=True)
     logger.info(
-        f"'HELP' menu for USER: {message.from_user.full_name} "
-        f"USERNAME: {message.from_user.username} ID: {message.from_user.id}"
+        f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+        f"ID: {message.from_user.id} getting 'HELP' menu"
     )
 
 
@@ -73,8 +73,8 @@ async def cmd_coins(message: Message) -> str:
     await message.answer("💎")
     await message.answer(coins_text, reply_markup=coin_kb())
     logger.info(
-        f"'COINS' menu for USER: {message.from_user.full_name} "
-        f"USERNAME: {message.from_user.username} ID: {message.from_user.id}"
+        f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+        f"ID: {message.from_user.id} getting 'COINS' menu"
     )
 
 
@@ -87,8 +87,8 @@ async def inline_coins_button(query: CallbackQuery) -> str:
     await query.message.edit_text(coins_text)
     await query.message.edit_reply_markup(reply_markup=coin_kb())
     logger.info(
-        f"'COINS' inline menu for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
+        f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
+        f"ID: {query.from_user.id} getting 'COINS' inline menu"
     )
 
 
@@ -103,8 +103,8 @@ async def cmd_categories(message: Message) -> str:
     await message.answer("📂")
     await message.answer(category_text, reply_markup=cat_kb())
     logger.info(
-        f"'CATEGORIES' menu for USER: {message.from_user.full_name} "
-        f"USERNAME: {message.from_user.username} ID: {message.from_user.id}"
+        f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+        f"ID: {message.from_user.id} getting 'CATEGORIES' menu"
     )
 
 
@@ -117,8 +117,8 @@ async def inline_categories_button(query: CallbackQuery) -> str:
     await query.message.edit_text(category_text)
     await query.message.edit_reply_markup(reply_markup=cat_kb())
     logger.info(
-        f"'CATEGORIES' inline menu for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
+        f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
+        f"ID: {query.from_user.id} getting 'CATEGORIES' inline menu"
     )
 
 
@@ -131,8 +131,8 @@ async def inline_full_categories_button(query: CallbackQuery) -> str:
     await query.message.edit_text(result)
     await query.message.edit_reply_markup(reply_markup=full_cat())
     logger.info(
-        f"'ALL CATEGORIES' inline menu for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
+        f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
+        f"ID: {query.from_user.id} getting 'ALL CATEGORIES' inline menu"
     )
 
 
@@ -145,8 +145,8 @@ async def inline_categories_market_cap_button(query: CallbackQuery) -> str:
     await query.message.edit_text(f"{market_cap_category_text}\n\n{result}")
     await query.message.edit_reply_markup(reply_markup=cat_kb())
     logger.info(
-        f"'CATEGORIES by market cap' inline menu for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
+        f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
+        f"ID: {query.from_user.id} getting 'CATEGORIES by market cap' inline menu"
     )
 
 
@@ -159,8 +159,8 @@ async def inline_categories_market_change_button(query: CallbackQuery) -> str:
     await query.message.edit_text(f"{market_cap_change_24h_category_text}\n\n{result}")
     await query.message.edit_reply_markup(reply_markup=cat_kb())
     logger.info(
-        f"'CATEGORIES by market change' inline menu for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
+        f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
+        f"ID: {query.from_user.id} getting 'CATEGORIES by market change' inline menu"
     )
 
 
@@ -175,8 +175,8 @@ async def cmd_gas(message: Message) -> str:
     result = await gas_tracker()
     await message.answer(result, reply_markup=bmm_kb(), disable_web_page_preview = True)
     logger.info(
-        f"'GAS' data for USER: {message.from_user.full_name} "
-        f"USERNAME: {message.from_user.username} ID: {message.from_user.id}"
+        f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+        f"ID: {message.from_user.id} getting 'GAS' data"
     )
 
 
@@ -190,12 +190,12 @@ async def inline_coins_button(query: CallbackQuery) -> str:
     await query.message.edit_text(result, disable_web_page_preview = True)
     await query.message.edit_reply_markup(reply_markup=bmm_kb())
     logger.info(
-        f"'GAS' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
+        f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
+        f"ID: {query.from_user.id} getting 'GAS' data"
     )
 
 
-# ADDITIONAL BUTTON
+# ADDITIONAL BACK BUTTON
 @user_router.callback_query(F.data == "back_to_main_menu")
 async def back_button(query: CallbackQuery) -> str:
     """
@@ -205,8 +205,8 @@ async def back_button(query: CallbackQuery) -> str:
     await query.message.edit_text(main_text)
     await query.message.edit_reply_markup(reply_markup=main_kb())
     logger.info(
-        f"'MAIN MENU' for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
+        f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
+        f"ID: {query.from_user.id} getting 'MAIN MENU'"
     )
 
 
