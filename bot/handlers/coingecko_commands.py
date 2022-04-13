@@ -1,6 +1,8 @@
 from aiogram import Router, F, types
 from aiogram.types import Message, CallbackQuery
+from aiogram.exceptions import TelegramBadRequest
 
+from contextlib import suppress
 from utils.misc.logging import logger
 
 from api_requests.coingecko.coingecko import (
@@ -15,10 +17,12 @@ from api_requests.coingecko.token_json import (
 )
 
 from keypads.keyboards import (
-    get_extra_coins_keyboards as ex_kb,
     get_back_main_menu_keyboards as mm_kb,
+    get_extra_coins_keyboards as ex_kb,
     get_extra_categories_keyboards as ex_cat_kb,
-    get_back_main_menu_keyboards as bmm_kb
+    get_back_main_menu_keyboards as bmm_kb,
+    get_advanced_search_keyboard as adv_search_kb,
+    CGSeachFactory
 )
 
 from data.text_file import (
@@ -32,6 +36,7 @@ from data.text_file import (
 coingecko_router = Router(name=__name__)
 
 
+# TRENDING COINS
 @coingecko_router.message(commands="trend")
 async def trend(message: types.Message) -> str:
     """
@@ -44,8 +49,8 @@ async def trend(message: types.Message) -> str:
     full_res = (f'{trend_text}\n\n{result}')
     await message.answer(full_res, reply_markup=mm_kb(), disable_web_page_preview=True)
     logger.info(
-        f"'TREND' menu for USER: {message.from_user.full_name} "
-        f"USERNAME: {message.from_user.username} ID: {message.from_user.id}"
+        f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+        f"ID: {message.from_user.id} getting 'TREND' menu"
     )
 
 
@@ -56,8 +61,8 @@ async def inline_trend_button(query: CallbackQuery) -> str:
     await query.message.edit_text(full_res, disable_web_page_preview=True)
     await query.message.edit_reply_markup(reply_markup=bmm_kb())
     logger.info(
-        f"'TREND' inline menu for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
+        f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
+        f"ID: {query.from_user.id} getting 'TREND' inline menu"
     )
 
 
@@ -74,8 +79,8 @@ async def cg_categories(message: types.Message) -> str:
             result = await get_categories_data(key)
     await message.answer(result, reply_markup=ex_cat_kb())
     logger.info(
-        f"CATEGORY '{message.text[1:]}' data for USER: {message.from_user.full_name} "
-        f"USERNAME: {message.from_user.username} ID: {message.from_user.id}"
+        f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+        f"ID: {message.from_user.id} getting category data for '{message.text[1:]}'"
     )
 
 
@@ -91,8 +96,8 @@ async def token_name(message: types.Message) -> str:
     result = await get_price(message.text[1:])
     await message.answer(result, reply_markup=mm_kb())
     logger.info(
-        f"TOKEN '{message.text[1:]}' data for USER: {message.from_user.full_name} "
-        f"USERNAME: {message.from_user.username} ID: {message.from_user.id}"
+        f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+        f"ID: {message.from_user.id} getting token data for '{message.text[1:]}'"
     )
 
 
@@ -109,8 +114,8 @@ async def token_extra_id(message: types.Message) -> str:
             result = await get_price(key)
     await message.answer(result, reply_markup=mm_kb())
     logger.info(
-        f"TOKEN '{message.text[1:]}' data for USER: {message.from_user.full_name} "
-        f"USERNAME: {message.from_user.username} ID: {message.from_user.id}"
+        f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+        f"ID: {message.from_user.id} getting token data for '{message.text[1:]}'"
     )
 
 
@@ -127,12 +132,12 @@ async def token_id(message: types.Message) -> str:
     await message.delete()
     if len(coins_id_list) >= 2:    
         await message.answer("🔎")
-        listToStr = '\n/'.join([str(elem).replace("-", "_") for elem in coins_id_list])
-        result = f"Выберите нужную криптовалюту:\n/{listToStr}"
-        await message.answer(result, reply_markup=mm_kb()) # as_kb()  # TODO
+        list_to_str = '\n/'.join([str(elem).replace("-", "_") for elem in coins_id_list])
+        result = f"Выберите нужную криптовалюту:\n\n/{list_to_str}"
+        await message.answer(result, reply_markup=adv_search_kb(message.text[1:]))
         logger.info(
-            f"'COIN SELECTION EXTRA MENU' for USER: {message.from_user.full_name} "
-            f"USERNAME: {message.from_user.username} ID: {message.from_user.id}"
+            f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+            f"ID: {message.from_user.id} getting '{message.text[1:]} SELECTION EXTRA MENU'"
         )
     else:
         await message.answer("💱")
@@ -140,21 +145,43 @@ async def token_id(message: types.Message) -> str:
             token_result = await get_price(token)
         await message.answer(token_result, reply_markup=mm_kb())
         logger.info(
-            f"TOKEN '{token}' data for USER: {message.from_user.full_name} "
-            f"USERNAME: {message.from_user.username} ID: {message.from_user.id}"
+            f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+            f"ID: {message.from_user.id} getting token data for '{message.text[1:]}'"
         )
 
 
-# EXTENDED SEARCH
+@coingecko_router.callback_query(CGSeachFactory.filter(F.action == "search"))
+async def callbacks_cg_search_fab(
+        callback: types.CallbackQuery, 
+        callback_data: CGSeachFactory):
+    await coingecko_seacher(callback.message, callback_data)
+    # await callback.answer()
+
+
 @coingecko_router.message(F.content_type.in_("text"))
-async def cg_search(message: Message):
+async def cg_search_by_text(message: Message):
     """
     Usage example: search + [query]
     """
     await message.delete()
     await message.answer("🔎")
-    result = await cg_searcher(str(message.text))
-    await message.answer(result, reply_markup=mm_kb())
+    result = await cg_searcher(str(message.text), 2)
+    await message.answer(result, reply_markup=adv_search_kb(message.text))
+    logger.info(
+        f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+        f"ID: {message.from_user.id} searched (SHORT) '{message.text}' token"
+    )
+
+
+async def coingecko_seacher(message: types.Message, new_value: str):
+    with suppress(TelegramBadRequest):
+        val = getattr(new_value,'value')
+        result = await cg_searcher(str(val), 1)
+        await message.edit_text(result, reply_markup=bmm_kb())
+    logger.info(
+        f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+        f"ID: {message.from_user.id} viewed (LONG) '{val}' token"
+    ) # TODO /user: CryptoApe instend of username/
 
 
 # COINS MENU INLINE BUTTONS: TODO

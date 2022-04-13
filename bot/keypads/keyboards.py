@@ -1,31 +1,31 @@
 from aiogram.types.inline_keyboard_button import InlineKeyboardButton
 from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from aiogram.dispatcher.filters.callback_data import CallbackData
+from typing import Optional
+
+
+class CGSeachFactory(CallbackData, prefix="cgsearch"):
+    action: str
+    value: Optional[str]
 
 
 def get_advanced_search_keyboard(query: str):
     """
     TODO
     """
-    inline_keyboard = [
-        [
-            InlineKeyboardButton(text="Расширенный поиск", callback_data=query)
-        ]
-    ]
-    return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+    builder = InlineKeyboardBuilder()
+    builder.button(
+        text="Расширенный поиск", callback_data=CGSeachFactory(action="search", value=query)
+    )
+    builder.button(
+        text="Главное меню", callback_data="back_to_main_menu")
+    builder.adjust(1)
+    return builder.as_markup()
 
 
-# TODO 
-# def test_keyboard(currencies: list):
-#     inline_keyboard = [
-#         [
-#             InlineKeyboardButton(text=each, callback_data=each) for each in currencies
-#         ]
-#     ]
-#     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
-
-
-def get_back_main_menu_keyboards():
+def get_back_main_menu_keyboards(): # -> InlineKeyboardMarkup
     """
     Get /btc /ltc /idt inline buttons
     """
@@ -109,18 +109,6 @@ def get_full_categories_inline_keyboard() -> None:
     Get /categories keyboard buttons
     """
     inline_keyboard = [
-        # [
-        #     InlineKeyboardButton(text='Smart Contract Platform', callback_data='/smart-contract-platform'),
-        #     InlineKeyboardButton(text='BNB Chain Ecosystem', callback_data='/binance-smart-chain')
-        # ],
-        # [
-        #     InlineKeyboardButton(text='Polygon Ecosystem', callback_data='/polygon-ecosystem'),
-        #     InlineKeyboardButton(text='Solana Ecosystem', callback_data='/solana-ecosystem')
-        # ],
-        # [
-        #     InlineKeyboardButton(text='Meme Tokens', callback_data='/meme-token'),
-        #     InlineKeyboardButton(text='Metaverse', callback_data='/metaverse')
-        # ],
         [
             InlineKeyboardButton(text="Категории", callback_data="categories"),
             InlineKeyboardButton(text="Главное меню", callback_data="back_to_main_menu")
@@ -168,3 +156,12 @@ def get_coin_inline_keyboard() -> None:
         ]
     ]
     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+
+
+# def test_keyboard(currencies: list):
+#     inline_keyboard = [
+#         [
+#             InlineKeyboardButton(text=each, callback_data=each) for each in currencies
+#         ]
+#     ]
+#     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)

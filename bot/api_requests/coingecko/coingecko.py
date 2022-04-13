@@ -85,7 +85,7 @@ async def get_price(token: str) -> str:
     return total_info
 
 
-async def cg_searcher(query: str) -> str:
+async def cg_searcher(query: str, mode: int) -> str:
     """
     Search for coins, categories and markets listed on CoinGecko ordered by largest Market Cap first
     """
@@ -99,16 +99,28 @@ async def cg_searcher(query: str) -> str:
         categories_list = []
         exchanges_list = []
 
-        for coin in response_data["coins"]:
-            token_id = coin["id"]
-            token_name = coin["name"]
-            token_symbol = coin["symbol"]
-            token_rank = coin["market_cap_rank"]
-            coins_list.append(
-                f"{'❓' if token_rank == None else token_rank} 🏅  <b>{token_symbol.upper()}</b> - {token_name}\n"
-                f"/{token_id.replace('-', '_')}\n"
-            )
-        pre_result = ("\n".join(coins_list))
+        if mode == 1: # full
+            for coin in response_data["coins"]:
+                token_id = coin["id"]
+                token_name = coin["name"]
+                token_symbol = coin["symbol"]
+                token_rank = coin["market_cap_rank"]
+                coins_list.append(
+                    f"{'❓' if token_rank == None else token_rank} 🏅  <b>{token_symbol.upper()}</b> - {token_name}\n"
+                    f"/{token_id.replace('-', '_')}\n"
+                )
+            pre_result = ("\n".join(coins_list))
+        elif mode == 2: # short
+            for coin in response_data["coins"][:5]:
+                token_id = coin["id"]
+                token_name = coin["name"]
+                token_symbol = coin["symbol"]
+                token_rank = coin["market_cap_rank"]
+                coins_list.append(
+                    f"{'❓' if token_rank == None else token_rank} 🏅  <b>{token_symbol.upper()}</b> - {token_name}\n"
+                    f"/{token_id.replace('-', '_')}\n"
+                )
+            pre_result = ("\n".join(coins_list))
         
         if not coins_list:
             result = (
@@ -119,7 +131,7 @@ async def cg_searcher(query: str) -> str:
                 f"По запросу <b>{query}</b> найдено {len(coins_list)} монет:\n\n"
                 f"{pre_result}"
             )
-    return str(result)
+    return result
 
 
 async def get_categories_list() -> str:
