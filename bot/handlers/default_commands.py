@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 
-from utils.misc.logging import logger
+from misc.logging import logger
 from api_requests.coingecko import get_categories_list, get_categories_list_data
 from api_requests.gas_gwei import gas_tracker
 

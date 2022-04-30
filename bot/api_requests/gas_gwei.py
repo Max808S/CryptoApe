@@ -3,7 +3,7 @@ import aiohttp
 from data.config_reader import load_config
 from data.text_file import gas_text
 
-from utils.misc.logging import logger
+from misc.logging import logger
 
 
 async def gas_tracker() -> str:
@@ -16,7 +16,7 @@ async def gas_tracker() -> str:
             # free gas station plan api only: 2000 calls/mounth
             gas_station_url = (
                 "https://ethgasstation.info/api/ethgasAPI.json?api-key="
-                f"{config.tg_bot.gas_staion}"
+                f"{config.misc.gas_staion}"
             )
 
             async with session.get(gas_station_url) as response:
@@ -41,7 +41,7 @@ async def gas_tracker() -> str:
         except:
             ether_scan_url = (
                 "https://api.etherscan.io/api?module=gastracker"
-                f"&action=gasoracle&apikey={config.tg_bot.etherscan}"
+                f"&action=gasoracle&apikey={config.misc.etherscan}"
             )
 
             async with session.get(ether_scan_url) as response:

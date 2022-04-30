@@ -3,7 +3,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.exceptions import TelegramBadRequest
 
 from contextlib import suppress
-from utils.misc.logging import logger
+from misc.logging import logger
 
 from api_requests.coingecko.coingecko import (
     get_price, get_categories_data, get_trending_coins,
