@@ -18,6 +18,8 @@ from keyboards.inline import (
     get_back_main_menu_keyboards as bmm_kb
 )
 
+import random
+
 
 flags = {"throttling_key": "default"}
 user_router = Router(name=__name__)
@@ -55,7 +57,7 @@ async def cmd_help(message: Message) -> str:
     """
     await message.delete()
     await message.answer("🤖")
-    await message.answer(help_text, disable_web_page_preview=True)
+    await message.answer(help_text, reply_markup=bmm_kb(), disable_web_page_preview=True)
     logger.info(
         f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
         f"ID: {message.from_user.id} getting 'HELP' menu"
@@ -195,6 +197,22 @@ async def inline_coins_button(query: CallbackQuery) -> str:
     )
 
 
+@user_router.message(F.content_type.in_("sticker"))
+async def echo_sticker(message: Message):
+    stickers = [
+        "CAACAgIAAxkBAAEPi-NibZ_5LwRhCcqyU9XpvEWqpGcIWwACOxEAAsHXqEvBYkQhS-j1IiQE",
+        "CAACAgIAAxkBAAEPi-tibaGEA9GyAAFAINLKq3yN-fVlQSUAAr4WAAJFIyBLGWV2Y6eXgvwkBA",
+        "CAACAgIAAxkBAAEPi_NibaVI8atcEhxY1OkUzR0JLGQQ6QACSxcAAkCuoEvJU2dSezl_IyQE",
+        "CAACAgIAAxkBAAEPi_VibaVYJBBr9Imlhq2rPhWZP5lEewAC7BUAAsymwUuIP6qzCm_qWSQE",
+        "CAACAgIAAxkBAAEPi_dibaVshu26cCgCYrnTdR1xsDPptAACzhMAAsspqUvRpYTRVOh2_yQE",
+        "CAACAgIAAxkBAAEPi_libaWBBJb8JTRBOslh9CMPsmkxVAACCBMAAuYzqUvMsnvh0yHD5CQE",
+        "CAACAgIAAxkBAAEPi_tibaWRB_imXo6myPTnGIBC-XL9cwACWRkAAgSzIUtj64Ra50Z_VSQE",
+        "CAACAgIAAxkBAAEPi_1ibaWiO1ZECu2bIQcBwI3rp-dSpwACpBUAAqNkIUvTUiowo_kd6CQE",
+        "CAACAgIAAxkBAAEPi_9ibaW64UTZPmwFBRznR3wqLI9rZwACvhYAAkUjIEsZZXZjp5eC_CQE"
+    ]
+    await message.answer_sticker(sticker=random.choice(stickers))
+
+
 # ADDITIONAL BACK BUTTON
 @user_router.callback_query(F.data == "back_to_main_menu")
 async def back_button(query: CallbackQuery) -> str:
@@ -202,7 +220,7 @@ async def back_button(query: CallbackQuery) -> str:
     Back to main menu with inline button
     Usage: press [Main menu] button
     """
-    await query.message.edit_text(main_text)
+    await query.message.edit_text(main_text, disable_web_page_preview=True)
     await query.message.edit_reply_markup(reply_markup=main_kb())
     logger.info(
         f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
