@@ -25,7 +25,7 @@ async def main() -> None:
     dp = Dispatcher(storage=storage)
 
     # Add admin filter to admin_router
-    admin_commands.admin_router.message.filter(F.chat.id == config.tg_bot.admin)
+    admin_commands.admin_router.message.filter(F.chat.id == config.tg_bot.admin_ids)
 
     # Register routers with handlers
     dp.include_router(default_commands.user_router)
