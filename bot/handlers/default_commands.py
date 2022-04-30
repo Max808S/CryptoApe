@@ -10,7 +10,7 @@ from data.text_file import (
     category_text, market_cap_category_text, market_cap_change_24h_category_text
 )
 
-from keypads.keyboards import (
+from keyboards.inline import (
     get_main_keyboard as main_kb,
     get_coin_inline_keyboard as coin_kb,
     get_categories_inline_keyboard as cat_kb,

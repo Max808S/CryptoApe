@@ -16,7 +16,7 @@ from api_requests.coingecko.token_json import (
     dict_with_token_ids, cg_token_extra_name
 )
 
-from keypads.keyboards import (
+from keyboards.inline import (
     get_back_main_menu_keyboards as mm_kb,
     get_extra_coins_keyboards as ex_kb,
     get_extra_categories_keyboards as ex_cat_kb,
