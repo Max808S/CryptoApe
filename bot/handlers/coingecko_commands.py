@@ -433,8 +433,6 @@ async def echo(message: Message) -> str:
     """
     echo_text = (
         '<b>Команда не опознана!</b>\n'
-        'Ваше сообщение:\n'
-        f'{message.text}\n\n'
         '<b>Используйте</b> /help'
     )
     await message.answer("❔")
