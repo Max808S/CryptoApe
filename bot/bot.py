@@ -7,7 +7,7 @@ from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
 from handlers import default_commands, admin_commands, coingecko_commands
 
 from utils.commands import set_bot_commands
-from utils.notify_admins import on_startup_notify
+from utils.notify_admins import on_startup
 
 from data.config_reader import load_config
 from middlewares.throttling import ThrottlingMiddleware
@@ -16,7 +16,7 @@ from magic_filter import F
 
 async def main() -> None:
     # Reading config file
-    config = load_config()
+    config = load_config(".env")
 
     # Creating bot
     bot = Bot(token=config.tg_bot.token, parse_mode="HTML")
@@ -36,7 +36,7 @@ async def main() -> None:
     dp.message.middleware(ThrottlingMiddleware())
 
     # Admin notification about bot launch
-    await on_startup_notify(bot)
+    await on_startup(bot, config.tg_bot.admin_ids)
 
     # Register /-commands
     await set_bot_commands(bot)
