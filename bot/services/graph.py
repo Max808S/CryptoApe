@@ -1,6 +1,7 @@
 import aiohttp
 import asyncio
 import datetime
+# pip pandas pyplot
 import pandas as pd
 import matplotlib.pyplot as plt
 
