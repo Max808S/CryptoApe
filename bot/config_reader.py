@@ -5,7 +5,7 @@ from dataclasses import dataclass
 @dataclass
 class TgBot:
     token: str
-    admin_ids: list[int]
+    admin_ids: list
 
 
 @dataclass
