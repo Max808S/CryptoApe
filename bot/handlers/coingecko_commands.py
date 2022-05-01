@@ -22,7 +22,8 @@ from keyboards.inline import (
     get_extra_categories_keyboards as ex_cat_kb,
     get_back_main_menu_keyboards as bmm_kb,
     get_advanced_search_keyboard as adv_search_kb,
-    CGSeachFactory
+    get_refresh_coin_keyboard as ref_kb,
+    CGSeachFactory, RefreshCoinFactory
 )
 
 from data.text_file import (
@@ -94,7 +95,7 @@ async def token_name(message: types.Message) -> str:
     await message.answer("💱")
     await message.delete()
     result = await get_price(message.text[1:])
-    await message.answer(result, reply_markup=mm_kb())
+    await message.answer(result, reply_markup=ref_kb(message.text[1:]))
     logger.info(
         f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
         f"ID: {message.from_user.id} getting token data for '{message.text[1:]}'"
@@ -112,7 +113,7 @@ async def token_extra_id(message: types.Message) -> str:
     for key, value in dict_with_token_ids.items():
         if value == message.text[1:]:
             result = await get_price(key)
-    await message.answer(result, reply_markup=mm_kb())
+    await message.answer(result, reply_markup=ref_kb(message.text[1:].replace("_", "-")))
     logger.info(
         f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
         f"ID: {message.from_user.id} getting token data for '{message.text[1:]}'"
@@ -140,14 +141,33 @@ async def token_id(message: types.Message) -> str:
             f"ID: {message.from_user.id} getting '{message.text[1:]} SELECTION EXTRA MENU'"
         )
     else:
-        await message.answer("💱")
+        await message.answer("💱") # TODO try except block
         for token in coins_id_list:
             token_result = await get_price(token)
-        await message.answer(token_result, reply_markup=mm_kb())
+        await message.answer(token_result, reply_markup=ref_kb(token))
         logger.info(
             f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
             f"ID: {message.from_user.id} getting token data for '{message.text[1:]}'"
         )
+
+
+@coingecko_router.callback_query(RefreshCoinFactory.filter(F.action == "refresh"))
+async def callbacks_coin_refresher_fab(
+        callback: types.CallbackQuery, 
+        callback_data: CGSeachFactory):
+    await coin_data_refresher(callback.message, callback_data)
+    await callback.answer("Данные обновлены ☑️")
+
+
+async def coin_data_refresher(message: types.Message, new_value: str):
+    with suppress(TelegramBadRequest):
+        val = getattr(new_value, 'value')
+        result = await get_price(str(val))
+        await message.edit_text(result, reply_markup=ref_kb(str(val)))
+    logger.info(
+        f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+        f"ID: {message.from_user.id} REFRESH '{val}' token"
+    )
 
 
 @coingecko_router.callback_query(CGSeachFactory.filter(F.action == "search"))
@@ -155,7 +175,6 @@ async def callbacks_cg_search_fab(
         callback: types.CallbackQuery, 
         callback_data: CGSeachFactory):
     await coingecko_seacher(callback.message, callback_data)
-    # await callback.answer()
 
 
 @coingecko_router.message(F.content_type.in_("text"))

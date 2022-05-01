@@ -11,6 +11,11 @@ class CGSeachFactory(CallbackData, prefix="cgsearch"):
     value: Optional[str]
 
 
+class RefreshCoinFactory(CallbackData, prefix="refresh_coin"):
+    action: str
+    value: Optional[str]
+
+
 def get_advanced_search_keyboard(query: str):
     """
     TODO
@@ -22,6 +27,20 @@ def get_advanced_search_keyboard(query: str):
     builder.button(
         text="Главное меню", callback_data="back_to_main_menu")
     builder.adjust(1)
+    return builder.as_markup()
+
+
+
+def get_refresh_coin_keyboard(query: str):
+    """
+    Refresh coin stat
+    """
+    builder = InlineKeyboardBuilder()
+    builder.button(
+        text="Обновить", callback_data=RefreshCoinFactory(action="refresh", value=query)
+    )
+    builder.button(
+        text="Главное меню", callback_data="back_to_main_menu")
     return builder.as_markup()
 
 
