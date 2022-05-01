@@ -10,7 +10,7 @@ from api_requests.coingecko.coingecko import (
     cg_searcher
 )
 
-from api_requests.coingecko.token_json import (
+from api_requests.coingecko.csv_reader import (
     dict_from_tokens_csv, cg_tokens_keys, cg_tokens_values,
     dict_from_cg_categories_csv, cg_categories_values,
     dict_with_token_ids, cg_token_extra_name
