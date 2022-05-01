@@ -1,7 +1,7 @@
 import aiohttp
 
-from data.config_reader import load_config
-from data.text_file import gas_text
+from config_reader import load_config
+from misc.text_file import gas_text
 
 from misc.logging import logger
 

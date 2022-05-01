@@ -5,7 +5,7 @@ from misc.logging import logger
 from api_requests.coingecko import get_categories_list, get_categories_list_data
 from api_requests.gas_gwei import gas_tracker
 
-from data.text_file import (
+from misc.text_file import (
     help_text, coins_text, disclaimer, main_text,
     category_text, market_cap_category_text, market_cap_change_24h_category_text
 )

@@ -26,7 +26,7 @@ from keyboards.inline import (
     CGSeachFactory, RefreshCoinFactory
 )
 
-from data.text_file import (
+from misc.text_file import (
     trend_text, btc_text, eth_text, bnb_text, sol_text,
     ada_text, xrp_text, luna_text, dot_text, avax_text,
     doge_text, matic_text, link_text, near_text, ltc_text,
@@ -141,14 +141,21 @@ async def token_id(message: types.Message) -> str:
             f"ID: {message.from_user.id} getting '{message.text[1:]} SELECTION EXTRA MENU'"
         )
     else:
-        await message.answer("💱") # TODO try except block
-        for token in coins_id_list:
-            token_result = await get_price(token)
-        await message.answer(token_result, reply_markup=ref_kb(token))
-        logger.info(
+        await message.answer("💱")
+        try:
+            for token in coins_id_list:
+                token_result = await get_price(token)
+            await message.answer(token_result, reply_markup=ref_kb(token))
+            logger.info(
             f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
             f"ID: {message.from_user.id} getting token data for '{message.text[1:]}'"
         )
+        except:
+            await message.answer(f"По запросу <b>{message.text}</b> ничего не найдено!", reply_markup=mm_kb())
+            logger.info(
+                f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+                f"ID: {message.from_user.id} getting FAIL data for '{message.text}'"
+            )
 
 
 @coingecko_router.callback_query(RefreshCoinFactory.filter(F.action == "refresh"))

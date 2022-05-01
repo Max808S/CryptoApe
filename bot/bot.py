@@ -9,7 +9,7 @@ from handlers import default_commands, admin_commands, coingecko_commands
 from utils.commands import set_bot_commands
 from utils.notify_admins import on_startup
 
-from data.config_reader import load_config
+from config_reader import load_config
 from middlewares.throttling import ThrottlingMiddleware
 from magic_filter import F
 
