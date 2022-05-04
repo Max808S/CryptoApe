@@ -1,9 +1,14 @@
-from aiogram import Router, F
+from aiogram import Router, F, types
 from aiogram.types import Message, CallbackQuery
 
 from misc.logging import logger
 from api_requests.coingecko import get_categories_list, get_categories_list_data
 from api_requests.gas_gwei import gas_tracker
+
+from sqlalchemy.ext.asyncio import AsyncSession
+# from sqlalchemy.exc import IntegrityError
+from db.requests import add_user
+from random import choice
 
 from misc.text_file import (
     help_text, coins_text, disclaimer, main_text,
@@ -18,8 +23,6 @@ from keyboards.inline import (
     get_back_main_menu_keyboards as bmm_kb
 )
 
-import random
-
 
 flags = {"throttling_key": "default"}
 user_router = Router(name=__name__)
@@ -27,7 +30,7 @@ user_router = Router(name=__name__)
 
 # MAIN BOT COMMANDS:
 @user_router.message(commands={"start", "restart"}, flags=flags)
-async def cmd_start(message: Message) -> str:
+async def cmd_start(message: types.Message, session: AsyncSession) -> str:
     """
     Get start menu
     Usage: /start command
@@ -37,6 +40,12 @@ async def cmd_start(message: Message) -> str:
         f'<b>{message.from_user.first_name}, добро пожаловать в CryptoApe сообщество!</b>\n\n'
         f'{disclaimer}'
     )
+    await add_user(
+        session, 
+        message.from_user.id, 
+        message.from_user.username,
+        message.from_user.full_name
+    )
     await message.answer_sticker(sticker=start_sticker)
     await message.answer(
         start_text, 
@@ -45,7 +54,7 @@ async def cmd_start(message: Message) -> str:
     )
     logger.info(
         f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
-        f"ID: {message.from_user.id} getting 'START' menu"
+        f"ID: {message.from_user.id} press 'START' menu"
     )
 
 
@@ -210,7 +219,7 @@ async def echo_sticker(message: Message):
         "CAACAgIAAxkBAAEPi_1ibaWiO1ZECu2bIQcBwI3rp-dSpwACpBUAAqNkIUvTUiowo_kd6CQE",
         "CAACAgIAAxkBAAEPi_9ibaW64UTZPmwFBRznR3wqLI9rZwACvhYAAkUjIEsZZXZjp5eC_CQE"
     ]
-    await message.answer_sticker(sticker=random.choice(stickers))
+    await message.answer_sticker(sticker=choice(stickers))
 
 
 # ADDITIONAL BACK BUTTON

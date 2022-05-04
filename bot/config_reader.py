@@ -1,4 +1,5 @@
 from environs import Env
+from pydantic import PostgresDsn
 from dataclasses import dataclass
 
 
@@ -6,6 +7,7 @@ from dataclasses import dataclass
 class TgBot:
     token: str
     admin_ids: list
+    postgres_dsn: PostgresDsn
 
 
 @dataclass
@@ -27,7 +29,8 @@ def load_config(path: str = None):
     return Config(
         tg_bot=TgBot(
             token=env.str("BOT_TOKEN"),
-            admin_ids=list(map(int, env.list("ADMINS")))
+            admin_ids=list(map(int, env.list("ADMINS"))),
+            postgres_dsn=env.str("POSTGRES_DSN")
         ),
         misc=Miscellaneous(
             etherscan=env.str("ETHERSCAN_KEY"),

@@ -2,3 +2,7 @@
 aiogram==3.0.0b2
 cachetools~=5.0.0
 environs==9.5.0
+
+sqlalchemy==1.4.36
+asyncpg==0.25.0
+greenlet==1.1.2
