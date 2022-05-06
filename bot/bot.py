@@ -52,7 +52,7 @@ async def main() -> None:
     
     # Register middlewares
     dp.message.middleware(ThrottlingMiddleware())
-    dp.message.middleware(DbSessionMiddleware(db_pool))
+    # dp.message.middleware(DbSessionMiddleware(db_pool))
 
     # Admin notification about bot launch
     await on_startup(bot, config.tg_bot.admin_ids)
