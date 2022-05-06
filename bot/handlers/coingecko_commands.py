@@ -4,6 +4,7 @@ from aiogram.exceptions import TelegramBadRequest
 
 from contextlib import suppress
 from misc.logging import logger
+from misc.text_file import trend_text
 
 from api_requests.coingecko.coingecko import (
     get_price, get_categories_data, get_trending_coins,
@@ -23,14 +24,7 @@ from keyboards.inline import (
     get_back_main_menu_keyboards as bmm_kb,
     get_advanced_search_keyboard as adv_search_kb,
     get_refresh_coin_keyboard as ref_kb,
-    CGSeachFactory, RefreshCoinFactory
-)
-
-from misc.text_file import (
-    trend_text, btc_text, eth_text, bnb_text, sol_text,
-    ada_text, xrp_text, luna_text, dot_text, avax_text,
-    doge_text, matic_text, link_text, near_text, ltc_text,
-    trx_text, xlm_text, vet_text, sand_text, gala_text, oasis_text
+    CGSeachFactory, RefreshCoinFactory, CGTokenFactory
 )
 
 
@@ -56,11 +50,10 @@ async def trend(message: types.Message) -> str:
 
 
 @coingecko_router.callback_query(F.data == "trend")
-async def inline_trend_button(query: CallbackQuery) -> str:
+async def inline_trend_button(query: CallbackQuery):
     result = await get_trending_coins()
     full_res = (f'{trend_text}\n\n{result}')
-    await query.message.edit_text(full_res, disable_web_page_preview=True)
-    await query.message.edit_reply_markup(reply_markup=bmm_kb())
+    await query.message.edit_text(full_res, reply_markup=bmm_kb(), disable_web_page_preview=True)
     logger.info(
         f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
         f"ID: {query.from_user.id} getting 'TREND' inline menu"
@@ -69,7 +62,7 @@ async def inline_trend_button(query: CallbackQuery) -> str:
 
 # MENU CATEGORIES
 @coingecko_router.message(commands=cg_categories_values)
-async def cg_categories(message: types.Message) -> str:
+async def cg_categories(message: types.Message):
     """
     Get a list of coins from a category
     """
@@ -87,7 +80,7 @@ async def cg_categories(message: types.Message) -> str:
 
 # SEARCH TOKENS IN CSV BASE: token_name & token_id
 @coingecko_router.message(commands=cg_tokens_keys)
-async def token_name(message: types.Message) -> str:
+async def token_name(message: types.Message):
     """
     Checking the coin in the database (CSV COINS LIST) by name.
     Usage example: /tron-bsc /wrapped-tron
@@ -103,7 +96,7 @@ async def token_name(message: types.Message) -> str:
 
 
 @coingecko_router.message(commands=cg_token_extra_name)
-async def token_extra_id(message: types.Message) -> str:
+async def token_extra_id(message: types.Message):
     """
     Checking the coin in the database (CSV COINS LIST) by extra id.
     Example: /tron_bsc /wrapped_tron, bitcoin, solana   /USED: "_"/
@@ -121,7 +114,7 @@ async def token_extra_id(message: types.Message) -> str:
 
 
 @coingecko_router.message(commands=cg_tokens_values)
-async def token_id(message: types.Message) -> str:
+async def token_id(message: types.Message):
     """
     Create a list if get 2+ coins
     Usage example /SYMBOL/: btc, trx, eth, sol
@@ -161,7 +154,7 @@ async def token_id(message: types.Message) -> str:
 @coingecko_router.callback_query(RefreshCoinFactory.filter(F.action == "refresh"))
 async def callbacks_coin_refresher_fab(
         callback: types.CallbackQuery, 
-        callback_data: CGSeachFactory):
+        callback_data: CGSeachFactory) -> str:
     await coin_data_refresher(callback.message, callback_data)
     await callback.answer("Данные обновлены ☑️")
 
@@ -210,250 +203,21 @@ async def coingecko_seacher(message: types.Message, new_value: str):
     ) # TODO /user: CryptoApe instend of username/
 
 
-# COINS MENU INLINE BUTTONS: TODO
-@coingecko_router.callback_query(F.data == "btc")
-async def btc_button(query: CallbackQuery) -> str:
-    result = await get_price("bitcoin")
-    final_result = f'<tg-spoiler>{btc_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
+# COINS INLINE MENU BUTTONS:
+@coingecko_router.callback_query(CGTokenFactory.filter(F.action == "cgtoken"))
+async def callbacks_cg_token_fab(query: CallbackQuery, callback_data: CGSeachFactory):
+    val = getattr(callback_data, 'value')
+    result = await get_price(str(val))
+    await query.message.edit_text(result, reply_markup=ex_kb())
     logger.info(
-        f"'BITCOIN' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "eth")
-async def eth_button(query: CallbackQuery) -> str:
-    result = await get_price("ethereum")
-    final_result = f'<tg-spoiler>{eth_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'ETHEREUM' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "bnb")
-async def bnb_button(query: CallbackQuery) -> str:
-    result = await get_price("binancecoin")
-    final_result = f'<tg-spoiler>{bnb_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'BNB' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "sol")
-async def sol_button(query: CallbackQuery) -> str:
-    result = await get_price("solana")
-    final_result = f'<tg-spoiler>{sol_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'SOLANA' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "dot")
-async def dot_button(query: CallbackQuery) -> str:
-    result = await get_price("polkadot")
-    final_result = f'<tg-spoiler>{dot_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'POLKADOT' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "xrp")
-async def xrp_button(query: CallbackQuery) -> str:
-    result = await get_price("ripple")
-    final_result = f'<tg-spoiler>{xrp_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'RIPPLE' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "ada")
-async def ada_button(query: CallbackQuery) -> str:
-    result = await get_price("cardano")
-    final_result = f'<tg-spoiler>{ada_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'ADA' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-    
-
-@coingecko_router.callback_query(F.data == "luna")
-async def luna_button(query: CallbackQuery) -> str:
-    result = await get_price("terra-luna")
-    final_result = f'<tg-spoiler>{luna_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'LUNA' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "avax")
-async def avax_button(query: CallbackQuery) -> str:
-    result = await get_price("avalanche-2")
-    final_result = f'<tg-spoiler>{avax_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'AVALANCHE' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-    
-
-@coingecko_router.callback_query(F.data == "doge")
-async def doge_button(query: CallbackQuery) -> str:
-    result = await get_price("dogecoin")
-    final_result = f'<tg-spoiler>{doge_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'DOGECOIN' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "matic")
-async def matic_button(query: CallbackQuery) -> str:
-    result = await get_price("matic-network")
-    final_result = f'<tg-spoiler>{matic_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'MATIC' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "link")
-async def link_button(query: CallbackQuery) -> str:
-    result = await get_price("chainlink")
-    final_result = f'<tg-spoiler>{link_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'CHAINLINK' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "near")
-async def near_button(query: CallbackQuery) -> str:
-    result = await get_price("near")
-    final_result = f'<tg-spoiler>{near_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'NEAR' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "ltc")
-async def ltc_button(query: CallbackQuery) -> str:
-    result = await get_price("litecoin")
-    final_result = f'<tg-spoiler>{ltc_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'LITECOIN' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "trx")
-async def trx_button(query: CallbackQuery) -> str:
-    result = await get_price("tron")
-    final_result = f'<tg-spoiler>{trx_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'TRON' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "xlm")
-async def xlm_button(query: CallbackQuery) -> str:
-    result = await get_price("stellar")
-    final_result = f'<tg-spoiler>{xlm_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'XLM' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "vet")
-async def vet_button(query: CallbackQuery) -> str:
-    result = await get_price("vechain")
-    final_result = f'<tg-spoiler>{vet_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'VET' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "sand")
-async def sand_button(query: CallbackQuery) -> str:
-    result = await get_price("the-sandbox")
-    final_result = f'<tg-spoiler>{sand_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'SAND' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "gala")
-async def gala_button(query: CallbackQuery) -> str:
-    result = await get_price("gala")
-    final_result = f'<tg-spoiler>{gala_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'GALA' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
-    )
-
-
-@coingecko_router.callback_query(F.data == "oasis")
-async def oasis_button(query: CallbackQuery) -> str:
-    result = await get_price("oasis-network")
-    final_result = f'<tg-spoiler>{oasis_text}</tg-spoiler>\n\n{result}'
-    await query.message.edit_text(final_result)
-    await query.message.edit_reply_markup(reply_markup=ex_kb())
-    logger.info(
-        f"'OASIS' data for USER: {query.from_user.full_name} "
-        f"USERNAME: {query.from_user.username} ID: {query.from_user.id}"
+        f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
+        f"ID: {query.from_user.id} getting token data for '{val}'"
     )
 
 
 # ECHO MESSAGE /must be last/
 @coingecko_router.message()
-async def echo(message: Message) -> str:
+async def echo(message: Message):
     """
     ECHO message
     """

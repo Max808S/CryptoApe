@@ -16,7 +16,53 @@ class RefreshCoinFactory(CallbackData, prefix="refresh_coin"):
     value: Optional[str]
 
 
-def get_advanced_search_keyboard(query: str):
+class CGTokenFactory(CallbackData, prefix="token"):
+    action: str
+    value: Optional[str]
+
+
+def get_main_coins_keyboard() -> InlineKeyboardMarkup:
+    """
+    Main menu coins button 
+    """
+    builder = InlineKeyboardBuilder()
+    builder.button(text="BTC", callback_data=CGTokenFactory(action="cgtoken", value="bitcoin"))
+    builder.button(text="ETH", callback_data=CGTokenFactory(action="cgtoken", value="ethereum"))
+    builder.button(text="BNB", callback_data=CGTokenFactory(action="cgtoken", value="binancecoin"))
+    builder.button(text="SOL", callback_data=CGTokenFactory(action="cgtoken", value="solana"))
+    builder.button(text="DOT", callback_data=CGTokenFactory(action="cgtoken", value="polkadot"))
+
+    builder.button(text="XRP", callback_data=CGTokenFactory(action="cgtoken", value="ripple"))
+    builder.button(text="ADA", callback_data=CGTokenFactory(action="cgtoken", value="cardano"))
+    builder.button(text="LUNA", callback_data=CGTokenFactory(action="cgtoken", value="terra-luna"))
+    builder.button(text="AVAX", callback_data=CGTokenFactory(action="cgtoken", value="avalanche-2"))
+    builder.button(text="DOGE", callback_data=CGTokenFactory(action="cgtoken", value="dogecoin"))
+
+    builder.button(text="MATIC", callback_data=CGTokenFactory(action="cgtoken", value="matic-network"))
+    builder.button(text="LINK", callback_data=CGTokenFactory(action="cgtoken", value="chainlink"))
+    builder.button(text="NEAR", callback_data=CGTokenFactory(action="cgtoken", value="near"))
+    builder.button(text="LTC", callback_data=CGTokenFactory(action="cgtoken", value="litecoin"))
+    builder.button(text="TRX", callback_data=CGTokenFactory(action="cgtoken", value="tron"))
+
+    builder.button(text="XLM", callback_data=CGTokenFactory(action="cgtoken", value="stellar"))
+    builder.button(text="VET", callback_data=CGTokenFactory(action="cgtoken", value="vechain"))
+    builder.button(text="SAND", callback_data=CGTokenFactory(action="cgtoken", value="the-sandbox"))
+    builder.button(text="GALA", callback_data=CGTokenFactory(action="cgtoken", value="gala"))
+    builder.button(text="OASIS", callback_data=CGTokenFactory(action="cgtoken", value="oasis-network"))
+
+    builder.button(text="TON", callback_data=CGTokenFactory(action="cgtoken", value="the-open-network"))
+    builder.button(text="APE", callback_data=CGTokenFactory(action="cgtoken", value="apecoin"))
+    builder.button(text="ALGO", callback_data=CGTokenFactory(action="cgtoken", value="algorand"))
+    builder.button(text="XMR", callback_data=CGTokenFactory(action="cgtoken", value="monero"))
+    builder.button(text="EOS", callback_data=CGTokenFactory(action="cgtoken", value="eos"))
+
+    builder.button(text="Категории", callback_data="categories")
+    builder.button(text="Главное меню", callback_data="back_to_main_menu")
+    builder.adjust(5)
+    return builder.as_markup()
+
+
+def get_advanced_search_keyboard(query: str) -> InlineKeyboardMarkup:
     """
     TODO
     """
@@ -30,8 +76,7 @@ def get_advanced_search_keyboard(query: str):
     return builder.as_markup()
 
 
-
-def get_refresh_coin_keyboard(query: str):
+def get_refresh_coin_keyboard(query: str) -> InlineKeyboardMarkup:
     """
     Refresh coin stat
     """
@@ -44,7 +89,7 @@ def get_refresh_coin_keyboard(query: str):
     return builder.as_markup()
 
 
-def get_back_main_menu_keyboards(): # -> InlineKeyboardMarkup
+def get_back_main_menu_keyboards() -> InlineKeyboardMarkup:
     """
     Get /btc /ltc /idt inline buttons
     """
@@ -56,7 +101,7 @@ def get_back_main_menu_keyboards(): # -> InlineKeyboardMarkup
     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
-def get_extra_categories_keyboards():
+def get_extra_categories_keyboards() -> InlineKeyboardMarkup:
     """
     Get extra categories inline buttons
     """
@@ -69,7 +114,7 @@ def get_extra_categories_keyboards():
     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
-def get_extra_coins_keyboards():
+def get_extra_coins_keyboards() -> InlineKeyboardMarkup:
     """
     /btc /ltc /idt inline buttons
     """
@@ -82,7 +127,7 @@ def get_extra_coins_keyboards():
     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
-def get_main_keyboard() -> None:
+def get_main_keyboard() -> InlineKeyboardMarkup:
     """
     /start menu
     """
@@ -99,7 +144,7 @@ def get_main_keyboard() -> None:
     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
-def get_categories_inline_keyboard() -> None:
+def get_categories_inline_keyboard() -> InlineKeyboardMarkup:
     """
     Get /categories keyboard buttons
     """
@@ -108,13 +153,6 @@ def get_categories_inline_keyboard() -> None:
             InlineKeyboardButton(text='Капитализация', callback_data='category_market_cap_desc'),
             InlineKeyboardButton(text='Изменения за 24ч', callback_data='category_market_cap_change_24h_desc')
         ],
-        # [
-        #     InlineKeyboardButton(text='1', callback_data='qwe1'),
-        #     InlineKeyboardButton(text='2', callback_data='qwe2'),
-        #     InlineKeyboardButton(text='3', callback_data='qwe2'),
-        #     InlineKeyboardButton(text='4', callback_data='qwe2'),
-        #     InlineKeyboardButton(text='5', callback_data='qwe2')
-        # ],
         [
             InlineKeyboardButton(text="Все категории", callback_data="full_categories"),
             InlineKeyboardButton(text="Главное меню", callback_data="back_to_main_menu")
@@ -123,52 +161,11 @@ def get_categories_inline_keyboard() -> None:
     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
-def get_full_categories_inline_keyboard() -> None:
+def get_full_categories_inline_keyboard() -> InlineKeyboardMarkup:
     """
     Get /categories keyboard buttons
     """
     inline_keyboard = [
-        [
-            InlineKeyboardButton(text="Категории", callback_data="categories"),
-            InlineKeyboardButton(text="Главное меню", callback_data="back_to_main_menu")
-        ]
-    ]
-    return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
-
-
-def get_coin_inline_keyboard() -> None:
-    """
-    Get /coin keyboard buttons
-    """
-    inline_keyboard = [
-        [
-            InlineKeyboardButton(text='BTC', callback_data='btc'), 
-            InlineKeyboardButton(text='ETH', callback_data='eth'), 
-            InlineKeyboardButton(text='BNB', callback_data='bnb'), 
-            InlineKeyboardButton(text='SOL', callback_data='sol'), 
-            InlineKeyboardButton(text='DOT', callback_data='dot')
-        ],
-        [
-            InlineKeyboardButton(text='XRP', callback_data='xrp'),
-            InlineKeyboardButton(text='ADA', callback_data='ada'),
-            InlineKeyboardButton(text='LUNA', callback_data='luna'),
-            InlineKeyboardButton(text='AVAX', callback_data='avax'),
-            InlineKeyboardButton(text='DOGE', callback_data='doge')
-        ],
-        [
-            InlineKeyboardButton(text='MATIC', callback_data='matic'),
-            InlineKeyboardButton(text='LINK', callback_data='link'),
-            InlineKeyboardButton(text='NEAR', callback_data='near'),
-            InlineKeyboardButton(text='LTC', callback_data='ltc'),
-            InlineKeyboardButton(text='TRX', callback_data='trx')
-        ],
-        [
-            InlineKeyboardButton(text='XLM', callback_data='xlm'),
-            InlineKeyboardButton(text='VET', callback_data='vet'),
-            InlineKeyboardButton(text='SAND', callback_data='sand'),
-            InlineKeyboardButton(text='GALA', callback_data='gala'),
-            InlineKeyboardButton(text='OASIS', callback_data='oasis')
-        ],
         [
             InlineKeyboardButton(text="Категории", callback_data="categories"),
             InlineKeyboardButton(text="Главное меню", callback_data="back_to_main_menu")

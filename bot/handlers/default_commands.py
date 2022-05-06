@@ -6,7 +6,6 @@ from api_requests.coingecko import get_categories_list, get_categories_list_data
 from api_requests.gas_gwei import gas_tracker
 
 from sqlalchemy.ext.asyncio import AsyncSession
-# from sqlalchemy.exc import IntegrityError
 from db.requests import add_user
 from random import choice
 
@@ -17,10 +16,10 @@ from misc.text_file import (
 
 from keyboards.inline import (
     get_main_keyboard as main_kb,
-    get_coin_inline_keyboard as coin_kb,
     get_categories_inline_keyboard as cat_kb,
     get_full_categories_inline_keyboard as full_cat,
-    get_back_main_menu_keyboards as bmm_kb
+    get_back_main_menu_keyboards as bmm_kb,
+    get_main_coins_keyboard as mc_kb
 )
 
 
@@ -82,7 +81,7 @@ async def cmd_coins(message: Message) -> str:
     """
     await message.delete()
     await message.answer("💎")
-    await message.answer(coins_text, reply_markup=coin_kb())
+    await message.answer(coins_text, reply_markup=mc_kb())
     logger.info(
         f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
         f"ID: {message.from_user.id} getting 'COINS' menu"
@@ -95,8 +94,7 @@ async def inline_coins_button(query: CallbackQuery) -> str:
     Get coins menu with inline button
     Usage: press [Coins] button
     """
-    await query.message.edit_text(coins_text)
-    await query.message.edit_reply_markup(reply_markup=coin_kb())
+    await query.message.edit_text(coins_text, reply_markup=mc_kb())
     logger.info(
         f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
         f"ID: {query.from_user.id} getting 'COINS' inline menu"
@@ -125,8 +123,7 @@ async def inline_categories_button(query: CallbackQuery) -> str:
     Get category menu with inline button
     Usage: press [Categories] button
     """
-    await query.message.edit_text(category_text)
-    await query.message.edit_reply_markup(reply_markup=cat_kb())
+    await query.message.edit_text(category_text, reply_markup=cat_kb())
     logger.info(
         f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
         f"ID: {query.from_user.id} getting 'CATEGORIES' inline menu"
@@ -139,8 +136,7 @@ async def inline_full_categories_button(query: CallbackQuery) -> str:
     List all categories
     """
     result = await get_categories_list()
-    await query.message.edit_text(result)
-    await query.message.edit_reply_markup(reply_markup=full_cat())
+    await query.message.edit_text(result, reply_markup=full_cat())
     logger.info(
         f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
         f"ID: {query.from_user.id} getting 'ALL CATEGORIES' inline menu"
@@ -153,8 +149,7 @@ async def inline_categories_market_cap_button(query: CallbackQuery) -> str:
     List all categories sorted by market cap
     """
     result = await get_categories_list_data("market_cap_desc")
-    await query.message.edit_text(f"{market_cap_category_text}\n\n{result}")
-    await query.message.edit_reply_markup(reply_markup=cat_kb())
+    await query.message.edit_text(f"{market_cap_category_text}\n\n{result}", reply_markup=cat_kb())
     logger.info(
         f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
         f"ID: {query.from_user.id} getting 'CATEGORIES by market cap' inline menu"
@@ -167,8 +162,7 @@ async def inline_categories_market_change_button(query: CallbackQuery) -> str:
     List all categories sorted by market cap change 24h
     """
     result = await get_categories_list_data("market_cap_change_24h_desc")
-    await query.message.edit_text(f"{market_cap_change_24h_category_text}\n\n{result}")
-    await query.message.edit_reply_markup(reply_markup=cat_kb())
+    await query.message.edit_text(f"{market_cap_change_24h_category_text}\n\n{result}", reply_markup=cat_kb())
     logger.info(
         f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
         f"ID: {query.from_user.id} getting 'CATEGORIES by market change' inline menu"
@@ -198,8 +192,7 @@ async def inline_coins_button(query: CallbackQuery) -> str:
     Usage: press [Gas] button
     """
     result = await gas_tracker()
-    await query.message.edit_text(result, disable_web_page_preview = True)
-    await query.message.edit_reply_markup(reply_markup=bmm_kb())
+    await query.message.edit_text(result, reply_markup=bmm_kb(), disable_web_page_preview = True)
     logger.info(
         f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
         f"ID: {query.from_user.id} getting 'GAS' data"
@@ -229,8 +222,7 @@ async def back_button(query: CallbackQuery) -> str:
     Back to main menu with inline button
     Usage: press [Main menu] button
     """
-    await query.message.edit_text(main_text, disable_web_page_preview=True)
-    await query.message.edit_reply_markup(reply_markup=main_kb())
+    await query.message.edit_text(main_text, reply_markup=main_kb(), disable_web_page_preview=True)
     logger.info(
         f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
         f"ID: {query.from_user.id} getting 'MAIN MENU'"
