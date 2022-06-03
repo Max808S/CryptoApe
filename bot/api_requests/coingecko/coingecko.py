@@ -1,6 +1,268 @@
 import aiohttp
 
 
+async def get_tokens_stat(sort: str, res: str, page: int) -> str:
+    """
+    Getting tokens stat view
+    /api/v3/coins/markets
+    """
+    async with aiohttp.ClientSession() as session: 
+        # url = (
+        #     f"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&"
+        #     f"order=+{sort}+&per_page=100&page=1&sparkline=false&"
+        #     f"price_change_percentage=1h%2C24h%2C7d"
+        # )
+
+        if sort == "market_cap_desc":
+            url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d"
+        elif sort == "volume_desc":
+            url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d"
+
+        tokens_price_list = []
+        tokens_rank_list = []
+        tokens_name_list = []
+        tokens_symbol_list = []
+        token_1h_list = []
+        token_24h_list = []
+        token_7d_list = []
+        market_cap_list = []
+        total_volume_list = []
+        emoji_1h_list = []
+        emoji_24h_list = []
+        emoji_7d_list = []
+
+        async with session.get(url) as response:
+            tokens_data = await response.json()
+
+            if page == 1:
+                coin_data = tokens_data[:10]
+                page_info = "[1 - 10]"
+            elif page == 2:
+                coin_data = tokens_data[10:20]
+                page_info = "[11 - 20]"
+            elif page == 3:
+                coin_data = tokens_data[20:30]
+                page_info = "[21 - 30]"
+            elif page == 4:
+                coin_data = tokens_data[30:40]
+                page_info = "[31 - 40]"
+            elif page == 5:
+                coin_data = tokens_data[40:50]
+                page_info = "[41 - 50]"
+            elif page == 6:
+                coin_data = tokens_data[50:60]
+                page_info = "[51 - 60]"
+            elif page == 7:
+                coin_data = tokens_data[60:70]
+                page_info = "[61 - 70]"
+            elif page == 8:
+                coin_data = tokens_data[70:80]
+                page_info = "[71 - 80]"
+            elif page == 9:
+                coin_data = tokens_data[80:90]
+                page_info = "[81 - 90]"
+            elif page == 10:
+                coin_data = tokens_data[90:100]
+                page_info = "[91 - 100]"
+           
+            for token in coin_data: 
+                token_name = token["name"]
+                token_symbol = token["symbol"]
+                token_price = token["current_price"]
+                coin_cap_rank = token["market_cap_rank"]
+                market_cap = token["market_cap"]
+                total_volume = token["total_volume"]
+                percent_change_1h = token["price_change_percentage_1h_in_currency"]
+                percent_change_24h = token["price_change_percentage_24h_in_currency"]
+                percent_change_7d = token["price_change_percentage_7d_in_currency"]
+                
+                # current price
+                formatted_token_price = "❓" if token_price == None else (
+                    ("{:.2f}".format(token_price)) if len(str(token_price)) > 5 else (
+                        "{0:,}".format(token_price).replace(",", " ")
+                    )
+                )
+
+                # token stats
+                formatted_market_cap = "❓" if market_cap == None else (
+                    "❓" if market_cap == 0 else ("{0:,}".format(market_cap).replace(",", " "))
+                )
+
+                formatted_volume = "❓" if total_volume == None else (
+                    "❓" if total_volume == 0 else ("{0:,}".format(total_volume).replace(",", " "))
+                )
+
+                formatted_coin_rank = "❓" if coin_cap_rank == None else coin_cap_rank
+
+                h1_emoji = "⚠️" if percent_change_1h == None else ("📈" if percent_change_1h > 0 else "📉")
+                h24_emoji = "⚠️" if percent_change_24h == None else ("📈" if percent_change_24h > 0 else "📉")
+                d7_emoji = "⚠️" if percent_change_7d == None else ("📈" if percent_change_7d > 0 else "📉")
+
+                tokens_name_list.append(token_name)
+                tokens_symbol_list.append(token_symbol)
+                tokens_price_list.append(formatted_token_price)
+                tokens_rank_list.append(formatted_coin_rank)
+                market_cap_list.append(formatted_market_cap)
+                total_volume_list.append(formatted_volume)
+                emoji_1h_list.append(h1_emoji)
+                emoji_24h_list.append(h24_emoji)
+                emoji_7d_list.append(d7_emoji)
+                token_1h_list.append("❓" if percent_change_24h == None else float("{:.1f}".format(percent_change_1h)))
+                token_24h_list.append("❓" if percent_change_24h == None else float("{:.1f}".format(percent_change_24h)))
+                token_7d_list.append("❓" if percent_change_7d == None else float("{:.1f}".format(percent_change_7d)))
+
+            market_cap_result = (
+                f"Криптовалюты сортированы по <b>рыночной капитализации</b>:\n"
+                f"\n#{tokens_rank_list[0]} <b>{tokens_name_list[0]}</b> - /{tokens_symbol_list[0]} - {tokens_price_list[0]} <b>$</b>\n"
+                f"📊 {market_cap_list[0]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[1]} <b>{tokens_name_list[1]}</b> - /{tokens_symbol_list[1]} - {tokens_price_list[1]} <b>$</b>\n"
+                f"📊 {market_cap_list[1]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[2]} <b>{tokens_name_list[2]}</b> - /{tokens_symbol_list[2]} - {tokens_price_list[2]} <b>$</b>\n"
+                f"📊 {market_cap_list[2]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[3]} <b>{tokens_name_list[3]}</b> - /{tokens_symbol_list[3]} - {tokens_price_list[3]} <b>$</b>\n"
+                f"📊 {market_cap_list[3]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[4]} <b>{tokens_name_list[4]}</b> - /{tokens_symbol_list[4]} - {tokens_price_list[4]} <b>$</b>\n"
+                f"📊 {market_cap_list[4]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[5]} <b>{tokens_name_list[5]}</b> - /{tokens_symbol_list[5]} - {tokens_price_list[0]} <b>$</b>\n"
+                f"📊 {market_cap_list[5]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[6]} <b>{tokens_name_list[6]}</b> - /{tokens_symbol_list[6]} - {tokens_price_list[1]} <b>$</b>\n"
+                f"📊 {market_cap_list[6]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[7]} <b>{tokens_name_list[7]}</b> - /{tokens_symbol_list[7]} - {tokens_price_list[2]} <b>$</b>\n"
+                f"📊 {market_cap_list[7]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[8]} <b>{tokens_name_list[8]}</b> - /{tokens_symbol_list[8]} - {tokens_price_list[3]} <b>$</b>\n"
+                f"📊 {market_cap_list[8]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[9]} <b>{tokens_name_list[9]}</b> - /{tokens_symbol_list[9]} - {tokens_price_list[4]} <b>$</b>\n"
+                f"📊 {market_cap_list[9]} <b>$</b>\n"
+                f"\nСтраница: <b>{page}</b> {page_info}"
+            )
+
+            total_volume_result = (
+                f"Криптовалюты сортированы по <b>объему торгов за 24ч</b>:\n"
+                f"\n#{tokens_rank_list[0]} <b>{tokens_name_list[0]}</b> - /{tokens_symbol_list[0]} - {tokens_price_list[0]} <b>$</b>\n"
+                f"📊 {total_volume_list[0]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[1]} <b>{tokens_name_list[1]}</b> - /{tokens_symbol_list[1]} - {tokens_price_list[1]} <b>$</b>\n"
+                f"📊 {total_volume_list[1]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[2]} <b>{tokens_name_list[2]}</b> - /{tokens_symbol_list[2]} - {tokens_price_list[2]} <b>$</b>\n"
+                f"📊 {total_volume_list[2]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[3]} <b>{tokens_name_list[3]}</b> - /{tokens_symbol_list[3]} - {tokens_price_list[3]} <b>$</b>\n"
+                f"📊 {total_volume_list[3]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[4]} <b>{tokens_name_list[4]}</b> - /{tokens_symbol_list[4]} - {tokens_price_list[4]} <b>$</b>\n"
+                f"📊 {total_volume_list[4]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[5]} <b>{tokens_name_list[5]}</b> - /{tokens_symbol_list[5]} - {tokens_price_list[0]} <b>$</b>\n"
+                f"📊 {total_volume_list[5]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[6]} <b>{tokens_name_list[6]}</b> - /{tokens_symbol_list[6]} - {tokens_price_list[1]} <b>$</b>\n"
+                f"📊 {total_volume_list[6]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[7]} <b>{tokens_name_list[7]}</b> - /{tokens_symbol_list[7]} - {tokens_price_list[2]} <b>$</b>\n"
+                f"📊 {total_volume_list[7]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[8]} <b>{tokens_name_list[8]}</b> - /{tokens_symbol_list[8]} - {tokens_price_list[3]} <b>$</b>\n"
+                f"📊 {total_volume_list[8]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[9]} <b>{tokens_name_list[9]}</b> - /{tokens_symbol_list[9]} - {tokens_price_list[4]} <b>$</b>\n"
+                f"📊 {total_volume_list[9]} <b>$</b>\n"
+                f"\nСтраница: <b>{page}</b> {page_info}"
+            )
+
+            h1_result = (
+                f"Криптовалюты сортированы по <b>рыночной капитализации</b>:"
+                f"\n\n<b>{tokens_name_list[0]}</b>  /{tokens_symbol_list[0]} - {tokens_price_list[0]} <b>$</b> {emoji_1h_list[0]} {token_1h_list[0]}%"
+                f"\n\n<b>{tokens_name_list[1]}</b>  /{tokens_symbol_list[1]} - {tokens_price_list[1]} <b>$</b> {emoji_1h_list[1]} {token_1h_list[1]}%"
+                f"\n\n<b>{tokens_name_list[2]}</b>  /{tokens_symbol_list[2]} - {tokens_price_list[2]} <b>$</b> {emoji_1h_list[2]} {token_1h_list[2]}%"
+                f"\n\n<b>{tokens_name_list[3]}</b>  /{tokens_symbol_list[3]} - {tokens_price_list[3]} <b>$</b> {emoji_1h_list[3]} {token_1h_list[3]}%"
+                f"\n\n<b>{tokens_name_list[4]}</b>  /{tokens_symbol_list[4]} - {tokens_price_list[4]} <b>$</b> {emoji_1h_list[4]} {token_1h_list[4]}%"
+                f"\n\n<b>{tokens_name_list[5]}</b>  /{tokens_symbol_list[5]} - {tokens_price_list[5]} <b>$</b> {emoji_1h_list[5]} {token_1h_list[5]}%"
+                f"\n\n<b>{tokens_name_list[6]}</b>  /{tokens_symbol_list[6]} - {tokens_price_list[6]} <b>$</b> {emoji_1h_list[6]} {token_1h_list[6]}%"
+                f"\n\n<b>{tokens_name_list[7]}</b>  /{tokens_symbol_list[7]} - {tokens_price_list[7]} <b>$</b> {emoji_1h_list[7]} {token_1h_list[7]}%"
+                f"\n\n<b>{tokens_name_list[8]}</b>  /{tokens_symbol_list[8]} - {tokens_price_list[8]} <b>$</b> {emoji_1h_list[8]} {token_1h_list[8]}%" 
+                f"\n\n<b>{tokens_name_list[9]}</b>  /{tokens_symbol_list[9]} - {tokens_price_list[9]} <b>$</b> {emoji_1h_list[9]} {token_1h_list[9]}%"
+                f"\n\nСтраница: <b>{page}</b> {page_info}    🕑 <b>1ч</b>"
+            )
+
+            h24_result = (
+                f"Криптовалюты сортированы по <b>рыночной капитализации</b>:"
+                f"\n\n<b>{tokens_name_list[0]}</b>  /{tokens_symbol_list[0]} - {tokens_price_list[0]} <b>$</b> {emoji_24h_list[0]} {token_24h_list[0]}%"
+                f"\n\n<b>{tokens_name_list[1]}</b>  /{tokens_symbol_list[1]} - {tokens_price_list[1]} <b>$</b> {emoji_24h_list[1]} {token_24h_list[1]}%"
+                f"\n\n<b>{tokens_name_list[2]}</b>  /{tokens_symbol_list[2]} - {tokens_price_list[2]} <b>$</b> {emoji_24h_list[2]} {token_24h_list[2]}%"
+                f"\n\n<b>{tokens_name_list[3]}</b>  /{tokens_symbol_list[3]} - {tokens_price_list[3]} <b>$</b> {emoji_24h_list[3]} {token_24h_list[3]}%"
+                f"\n\n<b>{tokens_name_list[4]}</b>  /{tokens_symbol_list[4]} - {tokens_price_list[4]} <b>$</b> {emoji_24h_list[4]} {token_24h_list[4]}%"
+                f"\n\n<b>{tokens_name_list[5]}</b>  /{tokens_symbol_list[5]} - {tokens_price_list[5]} <b>$</b> {emoji_24h_list[5]} {token_24h_list[5]}%"
+                f"\n\n<b>{tokens_name_list[6]}</b>  /{tokens_symbol_list[6]} - {tokens_price_list[6]} <b>$</b> {emoji_24h_list[6]} {token_24h_list[6]}%"
+                f"\n\n<b>{tokens_name_list[7]}</b>  /{tokens_symbol_list[7]} - {tokens_price_list[7]} <b>$</b> {emoji_24h_list[7]} {token_24h_list[7]}%"
+                f"\n\n<b>{tokens_name_list[8]}</b>  /{tokens_symbol_list[8]} - {tokens_price_list[8]} <b>$</b> {emoji_24h_list[8]} {token_24h_list[8]}%" 
+                f"\n\n<b>{tokens_name_list[9]}</b>  /{tokens_symbol_list[9]} - {tokens_price_list[9]} <b>$</b> {emoji_24h_list[9]} {token_24h_list[9]}%"
+                f"\n\nСтраница: <b>{page}</b> {page_info}    🕑 <b>24ч</b>"
+            )
+
+            d7_result = (
+                f"Криптовалюты сортированы по <b>рыночной капитализации</b>:"
+                f"\n\n<b>{tokens_name_list[0]}</b>  /{tokens_symbol_list[0]} - {tokens_price_list[0]} <b>$</b> {emoji_7d_list[0]} {token_7d_list[0]}%"
+                f"\n\n<b>{tokens_name_list[1]}</b>  /{tokens_symbol_list[1]} - {tokens_price_list[1]} <b>$</b> {emoji_7d_list[1]} {token_7d_list[1]}%"
+                f"\n\n<b>{tokens_name_list[2]}</b>  /{tokens_symbol_list[2]} - {tokens_price_list[2]} <b>$</b> {emoji_7d_list[2]} {token_7d_list[2]}%"
+                f"\n\n<b>{tokens_name_list[3]}</b>  /{tokens_symbol_list[3]} - {tokens_price_list[3]} <b>$</b> {emoji_7d_list[3]} {token_7d_list[3]}%"
+                f"\n\n<b>{tokens_name_list[4]}</b>  /{tokens_symbol_list[4]} - {tokens_price_list[4]} <b>$</b> {emoji_7d_list[4]} {token_7d_list[4]}%"
+                f"\n\n<b>{tokens_name_list[5]}</b>  /{tokens_symbol_list[5]} - {tokens_price_list[5]} <b>$</b> {emoji_7d_list[5]} {token_7d_list[5]}%"
+                f"\n\n<b>{tokens_name_list[6]}</b>  /{tokens_symbol_list[6]} - {tokens_price_list[6]} <b>$</b> {emoji_7d_list[6]} {token_7d_list[6]}%"
+                f"\n\n<b>{tokens_name_list[7]}</b>  /{tokens_symbol_list[7]} - {tokens_price_list[7]} <b>$</b> {emoji_7d_list[7]} {token_7d_list[7]}%"
+                f"\n\n<b>{tokens_name_list[8]}</b>  /{tokens_symbol_list[8]} - {tokens_price_list[8]} <b>$</b> {emoji_7d_list[8]} {token_7d_list[8]}%" 
+                f"\n\n<b>{tokens_name_list[9]}</b>  /{tokens_symbol_list[9]} - {tokens_price_list[9]} <b>$</b> {emoji_7d_list[9]} {token_7d_list[9]}%"
+                f"\n\nСтраница: <b>{page}</b> {page_info}    🕑 <b>7д</b>"
+            )
+
+            percentage_result = (
+                f"<b>{tokens_name_list[0]}</b> - /{tokens_symbol_list[0]} - {tokens_price_list[0]} <b>$</b>\n"
+                f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[0]}%\n"
+                f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[0]}%\n"
+                f"{d7_emoji} <b>30 дней:</b> {token_7d_list[0]}%\n"
+                f"\n<b>{tokens_name_list[1]}</b> - /{tokens_symbol_list[1]} - {tokens_price_list[1]} <b>$</b>\n"
+                f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[1]}%\n"
+                f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[1]}%\n"
+                f"{d7_emoji} <b>30 дней:</b> {token_7d_list[1]}%\n"
+                f"\n<b>{tokens_name_list[2]}</b> - /{tokens_symbol_list[2]} - {tokens_price_list[2]} <b>$</b>\n"
+                f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[2]}%\n"
+                f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[2]}%\n"
+                f"{d7_emoji} <b>30 дней:</b> {token_7d_list[2]}%\n"
+                f"\n<b>{tokens_name_list[3]}</b> - /{tokens_symbol_list[3]} - {tokens_price_list[3]} <b>$</b>\n"
+                f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[3]}%\n"
+                f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[3]}%\n"
+                f"{d7_emoji} <b>30 дней:</b> {token_7d_list[3]}%\n"
+                f"\n<b>{tokens_name_list[4]}</b> - /{tokens_symbol_list[4]} - {tokens_price_list[4]} <b>$</b>\n"
+                f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[4]}%\n"
+                f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[4]}%\n"
+                f"{emoji_24h_list[5]} <b>30 дней:</b> {token_7d_list[4]}%\n"
+            )
+
+            # mc_volume = (
+            #     f"<b>{tokens_name_list[0]}</b> - /{tokens_symbol_list[0]} - {tokens_price_list[0]} <b>$</b>\n"
+            #     f"📊 <b>Капитализация:</b> \n{market_cap_list[0]} <b>$</b>\n"
+            #     f"📊 <b>Объём за 24ч:</b> \n{total_volume_list[0]} <b>$</b>\n"
+            #     f"\n<b>{tokens_name_list[1]}</b> - /{tokens_symbol_list[1]} - {tokens_price_list[1]} <b>$</b>\n"
+            #     f"📊 <b>Капитализация:</b> \n{market_cap_list[1]} <b>$</b>\n"
+            #     f"📊 <b>Объём за 24ч:</b> \n{total_volume_list[1]} <b>$</b>\n"
+            #     f"\n<b>{tokens_name_list[2]}</b> - /{tokens_symbol_list[2]} - {tokens_price_list[2]} <b>$</b>\n"
+            #     f"📊 <b>Капитализация:</b> \n{market_cap_list[2]} <b>$</b>\n"
+            #     f"📊 <b>Объём за 24ч:</b> \n{total_volume_list[2]} <b>$</b>\n"
+            #     f"\n<b>{tokens_name_list[3]}</b> - /{tokens_symbol_list[3]} - {tokens_price_list[3]} <b>$</b>\n"
+            #     f"📊 <b>Капитализация:</b> \n{market_cap_list[3]} <b>$</b>\n"
+            #     f"📊 <b>Объём за 24ч:</b> \n{total_volume_list[3]} <b>$</b>\n"
+            #     f"\n<b>{tokens_name_list[4]}</b> - /{tokens_symbol_list[4]} - {tokens_price_list[4]} <b>$</b>\n"
+            #     f"📊 <b>Капитализация:</b> \n{market_cap_list[4]} <b>$</b>\n"
+            #     f"📊 <b>Объём за 24ч:</b> \n{total_volume_list[4]} <b>$</b>\n"
+            #     # f"Page: {page}"
+            # )
+
+    if res == "percentage": 
+        return percentage_result
+    elif res == "market_cap":
+        return market_cap_result
+    elif res == "total_volume":
+        return total_volume_result
+    elif res == "h1_result":
+        return h1_result
+    elif res == "h24_result":
+        return h24_result
+    elif res == "d7_result":
+        return d7_result
+    else: return "404 :)" # TODO
+
+
 async def get_price(token: str) -> str:
     """
     Getting token current price and another data
