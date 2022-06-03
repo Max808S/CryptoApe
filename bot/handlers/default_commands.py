@@ -19,7 +19,10 @@ from keyboards.inline import (
     get_categories_inline_keyboard as cat_kb,
     get_full_categories_inline_keyboard as full_cat,
     get_back_main_menu_keyboards as bmm_kb,
-    get_main_coins_keyboard as mc_kb
+    get_main_coins_keyboard as mc_kb,
+    get_setting_menu_keyboards as set_kb,
+    get_language_menu_keyboards as lang_kb,
+    get_currency_menu_keyboards as curr_kb
 )
 
 
@@ -255,15 +258,40 @@ async def inline_nft_button(query: CallbackQuery) -> str:
         f"ID: {query.from_user.id} getting 'NFT' inline menu"
     )
 
-# Setting
+
+# SETTING
 @user_router.callback_query(F.data == "setting")
 async def inline_setting_button(query: CallbackQuery) -> str:
     """
-    Get coins menu with inline button
+    Get setting menu.
     Usage: press [Setting] button
     """
-    await query.answer(f"Настройки временно недоступны")
-    # await query.message.edit_text(coins_text, reply_markup=mc_kb())
+    await query.message.edit_text("⚙️ Изменить язык или валюту:", reply_markup=set_kb())
+    logger.info(
+        f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
+        f"ID: {query.from_user.id} getting 'SETTING' inline menu"
+    )
+
+@user_router.callback_query(F.data == "language")
+async def inline_language_button(query: CallbackQuery) -> str:
+    """
+    Get lenguage setting menu.
+    Usage: press [Language] button
+    """
+    await query.message.edit_text("Выберите язык бота:\n ⚠️ <i>(Временно недоступно)</i>", reply_markup=lang_kb())
+    logger.info(
+        f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
+        f"ID: {query.from_user.id} getting 'SETTING' inline menu"
+    )
+
+
+@user_router.callback_query(F.data == "currency")
+async def inline_currency_button(query: CallbackQuery) -> str:
+    """
+    Get currency setting menu.
+    Usage: press [Currency] button
+    """
+    await query.message.edit_text("Выберите локальную валюту:\n ⚠️ <i>(Временно недоступно)</i>", reply_markup=curr_kb())
     logger.info(
         f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
         f"ID: {query.from_user.id} getting 'SETTING' inline menu"
@@ -276,12 +304,38 @@ async def inline_alerts_button(query: CallbackQuery) -> str:
     Get coins menu with inline button
     Usage: press [Alerts] button
     """
-    await query.answer(f"Уведомления временно недоступны")
-    # await query.message.edit_text(coins_text, reply_markup=mc_kb())
+    await query.answer(f"Уведомления временно недоступны 💤")
+    # await query.message.edit_text(result, reply_markup=mc_kb())
     logger.info(
         f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
         f"ID: {query.from_user.id} getting 'SETTING' inline menu"
     )
+
+
+@user_router.callback_query(F.data == "usd_currency")
+async def inline_usd_button(query: CallbackQuery) -> str:
+    await query.answer(f"Временно недоступно 💤")
+
+@user_router.callback_query(F.data == "eur_currency")
+async def inline_eur_button(query: CallbackQuery) -> str:
+    await query.answer(f"Временно недоступно 💤")
+
+@user_router.callback_query(F.data == "rub_currency")
+async def inline_rub_button(query: CallbackQuery) -> str:
+    await query.answer(f"Временно недоступно 💤")
+
+@user_router.callback_query(F.data == "uah_currency")
+async def inline_uah_button(query: CallbackQuery) -> str:
+    await query.answer(f"Временно недоступно 💤")
+
+@user_router.callback_query(F.data == "eng_language")
+async def inline_eng_button(query: CallbackQuery) -> str:
+    await query.answer(f"Временно недоступно 💤")
+
+@user_router.callback_query(F.data == "rus_language")
+async def inline_rus_button(query: CallbackQuery) -> str:
+    await query.answer(f"Временно недоступно 💤")
+
 
 # Testing user_router
 @user_router.message(commands="user", flags=flags)
