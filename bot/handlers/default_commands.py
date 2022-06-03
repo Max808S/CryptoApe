@@ -39,22 +39,34 @@ async def cmd_start(message: types.Message, session: AsyncSession) -> str:
         f'<b>{message.from_user.first_name}, добро пожаловать в CryptoApe сообщество!</b>\n\n'
         f'{disclaimer}'
     )
-    await add_user(
-        session, 
-        message.from_user.id, 
-        message.from_user.username,
-        message.from_user.full_name
-    )
-    await message.answer_sticker(sticker=start_sticker)
-    await message.answer(
-        start_text, 
-        disable_web_page_preview=True, 
-        reply_markup=main_kb()
-    )
-    logger.info(
-        f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
-        f"ID: {message.from_user.id} press 'START' menu"
-    )
+    try:
+        await add_user(
+            session, 
+            message.from_user.id, 
+            message.from_user.username,
+            message.from_user.full_name
+        )
+        await message.answer_sticker(sticker=start_sticker)
+        await message.answer(
+            start_text, 
+            disable_web_page_preview=True, 
+            reply_markup=main_kb()
+        )
+        logger.info(
+            f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+            f"ID: {message.from_user.id} press 'START' menu and added to DB"
+        )
+    except:
+        await message.answer_sticker(sticker=start_sticker)
+        await message.answer(
+            start_text, 
+            disable_web_page_preview=True, 
+            reply_markup=main_kb()
+        )
+        logger.info(
+            f"USER: {message.from_user.full_name} USERNAME: {message.from_user.username} "
+            f"ID: {message.from_user.id} press 'START' menu"
+        )
 
 
 @user_router.message(commands="help", flags=flags)
@@ -228,6 +240,48 @@ async def back_button(query: CallbackQuery) -> str:
         f"ID: {query.from_user.id} getting 'MAIN MENU'"
     )
 
+
+# NFT
+@user_router.callback_query(F.data == "nft_menu")
+async def inline_nft_button(query: CallbackQuery) -> str:
+    """
+    Get coins menu with inline button
+    Usage: press [NFT] button
+    """
+    await query.answer(f"NFT раздел временно недоступен")
+    # await query.message.edit_text(coins_text, reply_markup=mc_kb())
+    logger.info(
+        f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
+        f"ID: {query.from_user.id} getting 'NFT' inline menu"
+    )
+
+# Setting
+@user_router.callback_query(F.data == "setting")
+async def inline_setting_button(query: CallbackQuery) -> str:
+    """
+    Get coins menu with inline button
+    Usage: press [Setting] button
+    """
+    await query.answer(f"Настройки временно недоступны")
+    # await query.message.edit_text(coins_text, reply_markup=mc_kb())
+    logger.info(
+        f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
+        f"ID: {query.from_user.id} getting 'SETTING' inline menu"
+    )
+
+
+@user_router.callback_query(F.data == "alerts")
+async def inline_alerts_button(query: CallbackQuery) -> str:
+    """
+    Get coins menu with inline button
+    Usage: press [Alerts] button
+    """
+    await query.answer(f"Уведомления временно недоступны")
+    # await query.message.edit_text(coins_text, reply_markup=mc_kb())
+    logger.info(
+        f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "
+        f"ID: {query.from_user.id} getting 'SETTING' inline menu"
+    )
 
 # Testing user_router
 @user_router.message(commands="user", flags=flags)
