@@ -51,6 +51,11 @@ class D7_Factory(CallbackData, prefix="d7_factory"):
     value: Optional[int]
 
 
+class GainersLosersFactory(CallbackData, prefix="gainers_losers"):
+    action: str
+    value: Optional[str]
+
+
 def get_setting_menu_keyboards() -> InlineKeyboardMarkup:
     """
     Get setting menu.
@@ -107,6 +112,66 @@ def get_language_menu_keyboards() -> InlineKeyboardMarkup:
 #     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
+def get_gainers_losers_1h_stat_menu_keyboards() -> InlineKeyboardMarkup:
+    """
+    Gainer Losers
+    """
+    builder = InlineKeyboardBuilder()
+
+    builder.button(text="1ч ❇️", callback_data=GainersLosersFactory(action="gainers_losers", value="1h"))
+    builder.button(text="24ч", callback_data=GainersLosersFactory(action="gainers_losers", value="24h"))
+    builder.button(text="7д", callback_data=GainersLosersFactory(action="gainers_losers", value="7d"))
+        
+    builder.button(text="Капитализация", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
+    builder.button(text="Объем торгов", callback_data=CoinRateFactory(action="cgrate", value="volume_desc"))
+    
+    builder.button(text="1ч  /  24ч  /  7д", callback_data=CoinRateFactory(action="cgrate", value="h1_result"))
+    builder.button(text="Главное меню", callback_data="back_to_main_menu")
+    
+    builder.adjust(3, 2, 2)
+    return builder.as_markup()
+
+
+def get_gainers_losers_24h_stat_menu_keyboards() -> InlineKeyboardMarkup:
+    """
+    Gainer Losers
+    """
+    builder = InlineKeyboardBuilder()
+
+    builder.button(text="1ч", callback_data=GainersLosersFactory(action="gainers_losers", value="1h"))
+    builder.button(text="24ч ❇️", callback_data=GainersLosersFactory(action="gainers_losers", value="24h"))
+    builder.button(text="7д", callback_data=GainersLosersFactory(action="gainers_losers", value="7d"))
+        
+    builder.button(text="Капитализация", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
+    builder.button(text="Объем торгов", callback_data=CoinRateFactory(action="cgrate", value="volume_desc"))
+    
+    builder.button(text="Рост / Падение", callback_data=CoinRateFactory(action="cgrate", value="h1_result"))
+    builder.button(text="Главное меню", callback_data="back_to_main_menu")
+    
+    builder.adjust(3, 2, 2)
+    return builder.as_markup()
+
+
+def get_gainers_losers_7d_stat_menu_keyboards() -> InlineKeyboardMarkup:
+    """
+    Gainer Losers
+    """
+    builder = InlineKeyboardBuilder()
+
+    builder.button(text="1ч", callback_data=GainersLosersFactory(action="gainers_losers", value="1h"))
+    builder.button(text="24ч", callback_data=GainersLosersFactory(action="gainers_losers", value="24h"))
+    builder.button(text="7д ❇️", callback_data=GainersLosersFactory(action="gainers_losers", value="7d"))
+        
+    builder.button(text="Капитализация", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
+    builder.button(text="Объем торгов", callback_data=CoinRateFactory(action="cgrate", value="volume_desc"))
+    
+    builder.button(text="Рост / Падение", callback_data=CoinRateFactory(action="cgrate", value="h1_result"))
+    builder.button(text="Главное меню", callback_data="back_to_main_menu")
+    
+    builder.adjust(3, 2, 2)
+    return builder.as_markup()
+
+
 def get_market_cap_stats_menu_keyboards() -> InlineKeyboardMarkup:
     """
     MarketCap [1 - 2 - 3 - 4 - 5]
@@ -122,11 +187,12 @@ def get_market_cap_stats_menu_keyboards() -> InlineKeyboardMarkup:
     
     builder.button(text="Капитализация ❇️", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
     builder.button(text="Объем торгов", callback_data=CoinRateFactory(action="cgrate", value="volume_desc"))
+    builder.button(text="Рост / Падение", callback_data=CoinRateFactory(action="cgrate", value="h1_result"))
     
-    builder.button(text="1ч  /  24ч  /  7д", callback_data=CoinRateFactory(action="cgrate", value="h1_result"))
+    builder.button(text="< Назад", callback_data=GainersLosersFactory(action="gainers_losers", value="1h"))
     builder.button(text="Главное меню", callback_data="back_to_main_menu")
     
-    builder.adjust(6, 2)
+    builder.adjust(6, 1, 2, 2)
     return builder.as_markup()
 
 
@@ -146,10 +212,12 @@ def get_extra_market_cap_stats_menu_keyboards() -> InlineKeyboardMarkup:
     builder.button(text="Капитализация ❇️", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
     builder.button(text="Объем торгов", callback_data=CoinRateFactory(action="cgrate", value="volume_desc"))
     
-    builder.button(text="1ч  /  24ч  /  7д", callback_data=CoinRateFactory(action="cgrate", value="h1_result"))
+    builder.button(text="Рост / Падение", callback_data=CoinRateFactory(action="cgrate", value="h1_result"))
+    
+    builder.button(text="< Назад", callback_data=GainersLosersFactory(action="gainers_losers", value="1h"))
     builder.button(text="Главное меню", callback_data="back_to_main_menu")
 
-    builder.adjust(6, 2)
+    builder.adjust(6, 1, 2, 2)
     return builder.as_markup()
 
 
@@ -166,13 +234,14 @@ def get_volume_stats_menu_keyboards() -> InlineKeyboardMarkup:
     builder.button(text="5", callback_data=TotalVolumeFactory(action="volume_page", value=5))
     builder.button(text=">", callback_data=TotalVolumeFactory(action="volume_page", value=6))
 
-    builder.button(text="Капитализация", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
     builder.button(text="Объем торгов ❇️", callback_data=CoinRateFactory(action="cgrate", value="volume_desc"))
+    builder.button(text="Капитализация", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
+    builder.button(text="Рост / Падение", callback_data=CoinRateFactory(action="cgrate", value="h1_result"))
     
-    builder.button(text="1ч  /  24ч  /  7д", callback_data=CoinRateFactory(action="cgrate", value="h1_result"))
+    builder.button(text="< Назад", callback_data=GainersLosersFactory(action="gainers_losers", value="1h"))
     builder.button(text="Главное меню", callback_data="back_to_main_menu")
 
-    builder.adjust(6, 2)
+    builder.adjust(6, 1, 2, 2)
     return builder.as_markup()
 
 
@@ -189,13 +258,14 @@ def get_extra_volume_stats_menu_keyboards() -> InlineKeyboardMarkup:
     builder.button(text="9", callback_data=TotalVolumeFactory(action="volume_page", value=9))
     builder.button(text="10", callback_data=TotalVolumeFactory(action="volume_page", value=10))
 
-    builder.button(text="Капитализация", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
     builder.button(text="Объем торгов ❇️", callback_data=CoinRateFactory(action="cgrate", value="volume_desc"))
+    builder.button(text="Капитализация", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
+    builder.button(text="Рост / Падение", callback_data=CoinRateFactory(action="cgrate", value="h1_result"))    
     
-    builder.button(text="1ч  /  24ч  /  7д", callback_data=CoinRateFactory(action="cgrate", value="h1_result"))    
+    builder.button(text="< Назад", callback_data=GainersLosersFactory(action="gainers_losers", value="1h"))
     builder.button(text="Главное меню", callback_data="back_to_main_menu")
 
-    builder.adjust(6, 2)
+    builder.adjust(6, 1, 2, 2)
     return builder.as_markup()
 
 
@@ -219,9 +289,10 @@ def get_1h_tokens_stat_menu_keyboards() -> InlineKeyboardMarkup:
     builder.button(text="Капитализация", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
     builder.button(text="Объем торгов", callback_data=CoinRateFactory(action="cgrate", value="volume_desc"))
     
+    builder.button(text="< Назад", callback_data=GainersLosersFactory(action="gainers_losers", value="1h"))
     builder.button(text="Главное меню", callback_data="back_to_main_menu")
     
-    builder.adjust(6, 3, 2, 1)
+    builder.adjust(6, 3, 2, 2)
     return builder.as_markup()
 
 
@@ -245,9 +316,10 @@ def get_extra_1h_tokens_stat_menu_keyboards() -> InlineKeyboardMarkup:
     builder.button(text="Капитализация", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
     builder.button(text="Объем торгов", callback_data=CoinRateFactory(action="cgrate", value="volume_desc"))
     
+    builder.button(text="< Назад", callback_data=GainersLosersFactory(action="gainers_losers", value="1h"))
     builder.button(text="Главное меню", callback_data="back_to_main_menu")
     
-    builder.adjust(6, 3, 2, 1)
+    builder.adjust(6, 3, 2, 2)
     return builder.as_markup()
 
 
@@ -271,10 +343,12 @@ def get_24h_tokens_stat_menu_keyboards() -> InlineKeyboardMarkup:
     builder.button(text="Капитализация", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
     builder.button(text="Объем торгов", callback_data=CoinRateFactory(action="cgrate", value="volume_desc"))
     
+    builder.button(text="< Назад", callback_data=GainersLosersFactory(action="gainers_losers", value="1h"))
     builder.button(text="Главное меню", callback_data="back_to_main_menu")
 
-    builder.adjust(6, 3, 2, 1)
+    builder.adjust(6, 3, 2, 2)
     return builder.as_markup()
+
 
 def get_extra_24h_tokens_stat_menu_keyboards() -> InlineKeyboardMarkup:
     """
@@ -296,9 +370,10 @@ def get_extra_24h_tokens_stat_menu_keyboards() -> InlineKeyboardMarkup:
     builder.button(text="Капитализация", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
     builder.button(text="Объем торгов", callback_data=CoinRateFactory(action="cgrate", value="volume_desc"))
     
+    builder.button(text="< Назад", callback_data=GainersLosersFactory(action="gainers_losers", value="1h"))
     builder.button(text="Главное меню", callback_data="back_to_main_menu")
     
-    builder.adjust(6, 3, 2, 1)
+    builder.adjust(6, 3, 2, 2)
     return builder.as_markup()
 
 
@@ -322,9 +397,10 @@ def get_7d_tokens_stat_menu_keyboards() -> InlineKeyboardMarkup:
     builder.button(text="Капитализация", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
     builder.button(text="Объем торгов", callback_data=CoinRateFactory(action="cgrate", value="volume_desc"))
     
+    builder.button(text="< Назад", callback_data=GainersLosersFactory(action="gainers_losers", value="1h"))
     builder.button(text="Главное меню", callback_data="back_to_main_menu")
 
-    builder.adjust(6, 3, 2, 1)
+    builder.adjust(6, 3, 2, 2)
     return builder.as_markup()
 
 
@@ -348,9 +424,10 @@ def get_extra_7d_tokens_stat_menu_keyboards() -> InlineKeyboardMarkup:
     builder.button(text="Капитализация", callback_data=CoinRateFactory(action="cgrate", value="market_cap_desc"))
     builder.button(text="Объем торгов", callback_data=CoinRateFactory(action="cgrate", value="volume_desc"))
     
+    builder.button(text="< Назад", callback_data=GainersLosersFactory(action="gainers_losers", value="1h"))
     builder.button(text="Главное меню", callback_data="back_to_main_menu")
     
-    builder.adjust(6, 3, 2, 1)
+    builder.adjust(6, 3, 2, 2)
     return builder.as_markup()
 
 

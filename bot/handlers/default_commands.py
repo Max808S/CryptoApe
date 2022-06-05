@@ -251,7 +251,7 @@ async def inline_nft_button(query: CallbackQuery) -> str:
     Get coins menu with inline button
     Usage: press [NFT] button
     """
-    await query.answer(f"NFT раздел временно недоступен")
+    await query.answer(f"NFT раздел временно недоступен 💤")
     # await query.message.edit_text(coins_text, reply_markup=mc_kb())
     logger.info(
         f"USER: {query.from_user.full_name} USERNAME: {query.from_user.username} "

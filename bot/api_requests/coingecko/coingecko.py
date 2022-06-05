@@ -1,3 +1,4 @@
+from xmlrpc.server import list_public_methods
 import aiohttp
 
 
@@ -17,7 +18,7 @@ async def get_tokens_stat(sort: str, res: str, page: int) -> str:
             url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d"
         elif sort == "volume_desc":
             url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d"
-
+        
         tokens_price_list = []
         tokens_rank_list = []
         tokens_name_list = []
@@ -64,7 +65,10 @@ async def get_tokens_stat(sort: str, res: str, page: int) -> str:
             elif page == 10:
                 coin_data = tokens_data[90:100]
                 page_info = "[91 - 100]"
-           
+            else: 
+                coin_data = tokens_data
+                page_info = "gang"
+
             for token in coin_data: 
                 token_name = token["name"]
                 token_symbol = token["symbol"]
@@ -111,6 +115,102 @@ async def get_tokens_stat(sort: str, res: str, page: int) -> str:
                 token_24h_list.append("❓" if percent_change_24h == None else float("{:.1f}".format(percent_change_24h)))
                 token_7d_list.append("❓" if percent_change_7d == None else float("{:.1f}".format(percent_change_7d)))
 
+            h1_losers_dict = dict(sorted(zip(token_1h_list, zip(tokens_name_list, tokens_price_list))))
+            h1_gainers_dict = dict(sorted(zip(token_1h_list, zip(tokens_name_list, tokens_price_list)), reverse=True))
+            
+            h24_losers_dict = dict(sorted(zip(token_24h_list, zip(tokens_name_list, tokens_price_list))))
+            h24_gainers_dict = dict(sorted(zip(token_24h_list, zip(tokens_name_list, tokens_price_list)), reverse=True))
+
+            d7_losers_dict = dict(sorted(zip(token_7d_list, zip(tokens_name_list, tokens_price_list))))
+            d7_gainers_dict = dict(sorted(zip(token_7d_list, zip(tokens_name_list, tokens_price_list)), reverse=True))
+
+            loser_tokens_name_1h = list(h1_losers_dict.keys())[:5]
+            loser_tokens_stat_1h = list(h1_losers_dict.values())[:5]
+            gainer_tokens_name_1h = list(h1_gainers_dict.keys())[:5]
+            gainer_tokens_stat_1h = list(h1_gainers_dict.values())[:5]
+
+            loser_tokens_name_24h = list(h24_losers_dict.keys())[:5]
+            loser_tokens_stat_24h = list(h24_losers_dict.values())[:5]
+            gainer_tokens_name_24h = list(h24_gainers_dict.keys())[:5]
+            gainer_tokens_stat_24h = list(h24_gainers_dict.values())[:5]
+
+            loser_tokens_name_7d = list(d7_losers_dict.keys())[:5]
+            loser_tokens_stat_7d = list(d7_losers_dict.values())[:5]
+            gainer_tokens_name_7d = list(d7_gainers_dict.keys())[:5]
+            gainer_tokens_stat_7d = list(d7_gainers_dict.values())[:5]
+            
+            gainers_1h = (
+                f"📈 {gainer_tokens_name_1h[0]}% <b>{list(gainer_tokens_stat_1h[0])[0]}</b> - {list(gainer_tokens_stat_24h[0])[1]} <b>$</b>\n\n"
+                f"📈 {gainer_tokens_name_1h[1]}% <b>{list(gainer_tokens_stat_1h[1])[0]}</b> - {list(gainer_tokens_stat_24h[1])[1]} <b>$</b>\n\n"
+                f"📈 {gainer_tokens_name_1h[2]}% <b>{list(gainer_tokens_stat_1h[2])[0]}</b> - {list(gainer_tokens_stat_24h[2])[1]} <b>$</b>\n\n"
+                f"📈 {gainer_tokens_name_1h[3]}% <b>{list(gainer_tokens_stat_1h[3])[0]}</b> - {list(gainer_tokens_stat_24h[3])[1]} <b>$</b>\n\n"
+                f"📈 {gainer_tokens_name_1h[4]}% <b>{list(gainer_tokens_stat_1h[4])[0]}</b> - {list(gainer_tokens_stat_24h[4])[1]} <b>$</b>\n\n"
+            )
+
+            losers_1h = (
+                f"📉 {loser_tokens_name_1h[0]}% <b>{list(loser_tokens_stat_1h[0])[0]}</b> - {list(loser_tokens_stat_24h[0])[1]} <b>$</b>\n\n"
+                f"📉 {loser_tokens_name_1h[1]}% <b>{list(loser_tokens_stat_1h[1])[0]}</b> - {list(loser_tokens_stat_24h[1])[1]} <b>$</b>\n\n"
+                f"📉 {loser_tokens_name_1h[2]}% <b>{list(loser_tokens_stat_1h[2])[0]}</b> - {list(loser_tokens_stat_24h[2])[1]} <b>$</b>\n\n"
+                f"📉 {loser_tokens_name_1h[3]}% <b>{list(loser_tokens_stat_1h[3])[0]}</b> - {list(loser_tokens_stat_24h[3])[1]} <b>$</b>\n\n"
+                f"📉 {loser_tokens_name_1h[4]}% <b>{list(loser_tokens_stat_1h[4])[0]}</b> - {list(loser_tokens_stat_24h[4])[1]} <b>$</b>\n\n"
+            )
+
+            gainers_24h = (
+                f"📈 {gainer_tokens_name_24h[0]}% <b>{list(gainer_tokens_stat_24h[0])[0]}</b> - {list(gainer_tokens_stat_24h[0])[1]} <b>$</b>\n\n"
+                f"📈 {gainer_tokens_name_24h[1]}% <b>{list(gainer_tokens_stat_24h[1])[0]}</b> - {list(gainer_tokens_stat_24h[1])[1]} <b>$</b>\n\n"
+                f"📈 {gainer_tokens_name_24h[2]}% <b>{list(gainer_tokens_stat_24h[2])[0]}</b> - {list(gainer_tokens_stat_24h[2])[1]} <b>$</b>\n\n"
+                f"📈 {gainer_tokens_name_24h[3]}% <b>{list(gainer_tokens_stat_24h[3])[0]}</b> - {list(gainer_tokens_stat_24h[3])[1]} <b>$</b>\n\n"
+                f"📈 {gainer_tokens_name_24h[4]}% <b>{list(gainer_tokens_stat_24h[4])[0]}</b> - {list(gainer_tokens_stat_24h[4])[1]} <b>$</b>\n\n"
+            )
+
+            losers_24h = (
+                f"📉 {loser_tokens_name_24h[0]}% <b>{list(loser_tokens_stat_24h[0])[0]}</b> - {list(loser_tokens_stat_24h[0])[1]} <b>$</b>\n\n"
+                f"📉 {loser_tokens_name_24h[1]}% <b>{list(loser_tokens_stat_24h[1])[0]}</b> - {list(loser_tokens_stat_24h[1])[1]} <b>$</b>\n\n"
+                f"📉 {loser_tokens_name_24h[2]}% <b>{list(loser_tokens_stat_24h[2])[0]}</b> - {list(loser_tokens_stat_24h[2])[1]} <b>$</b>\n\n"
+                f"📉 {loser_tokens_name_24h[3]}% <b>{list(loser_tokens_stat_24h[3])[0]}</b> - {list(loser_tokens_stat_24h[3])[1]} <b>$</b>\n\n"
+                f"📉 {loser_tokens_name_24h[4]}% <b>{list(loser_tokens_stat_24h[4])[0]}</b> - {list(loser_tokens_stat_24h[4])[1]} <b>$</b>\n\n"
+            )
+
+            gainers_7d = (
+                f"📈 {gainer_tokens_name_7d[0]}% <b>{list(gainer_tokens_stat_7d[0])[0]}</b> - {list(gainer_tokens_stat_7d[0])[1]} <b>$</b>\n\n"
+                f"📈 {gainer_tokens_name_7d[1]}% <b>{list(gainer_tokens_stat_7d[1])[0]}</b> - {list(gainer_tokens_stat_7d[1])[1]} <b>$</b>\n\n"
+                f"📈 {gainer_tokens_name_7d[2]}% <b>{list(gainer_tokens_stat_7d[2])[0]}</b> - {list(gainer_tokens_stat_7d[2])[1]} <b>$</b>\n\n"
+                f"📈 {gainer_tokens_name_7d[3]}% <b>{list(gainer_tokens_stat_7d[3])[0]}</b> - {list(gainer_tokens_stat_7d[3])[1]} <b>$</b>\n\n"
+                f"📈 {gainer_tokens_name_7d[4]}% <b>{list(gainer_tokens_stat_7d[4])[0]}</b> - {list(gainer_tokens_stat_7d[4])[1]} <b>$</b>\n\n"
+            )
+
+            losers_7d = (
+                f"📉 {loser_tokens_name_7d[0]}% <b>{list(loser_tokens_stat_7d[0])[0]}</b> - {list(loser_tokens_stat_7d[0])[1]} <b>$</b>\n\n"
+                f"📉 {loser_tokens_name_7d[1]}% <b>{list(loser_tokens_stat_7d[1])[0]}</b> - {list(loser_tokens_stat_7d[1])[1]} <b>$</b>\n\n"
+                f"📉 {loser_tokens_name_7d[2]}% <b>{list(loser_tokens_stat_7d[2])[0]}</b> - {list(loser_tokens_stat_7d[2])[1]} <b>$</b>\n\n"
+                f"📉 {loser_tokens_name_7d[3]}% <b>{list(loser_tokens_stat_7d[3])[0]}</b> - {list(loser_tokens_stat_7d[3])[1]} <b>$</b>\n\n"
+                f"📉 {loser_tokens_name_7d[4]}% <b>{list(loser_tokens_stat_7d[4])[0]}</b> - {list(loser_tokens_stat_7d[4])[1]} <b>$</b>\n\n"
+            )
+
+            h1_gainers_losers = (
+                f"▪️ Наиболее выросшие в цене: <b>[1ч]</b>\n\n"
+                f"{gainers_1h}"
+                f"▪️ Наиболее упавшие в цене: <b>[1ч]</b>\n\n"
+                f"{losers_1h}"
+                f"<i>Топ 100 по рыночной капитализации</i>"
+            )
+
+            h24_gainers_losers = (
+                f"▪️ Наиболее выросшие в цене: <b>[24ч]</b>\n\n"
+                f"{gainers_24h}"
+                f"▪️ Наиболее упавшие в цене: <b>[24ч]</b>\n\n"
+                f"{losers_24h}"
+                f"<i>Топ 100 по рыночной капитализации</i>"
+            )
+            
+            d7_gainers_losers = (
+                f"▪️ Наиболее выросшие в цене: <b>[7д]</b>\n\n"
+                f"{gainers_7d}"
+                f"▪️ Наиболее упавшие в цене: <b>[7д]</b>\n\n"
+                f"{losers_7d}"
+                f"<i>Топ 100 по рыночной капитализации</i>"
+            )
+
             market_cap_result = (
                 f"Криптовалюты сортированы по <b>рыночной капитализации</b>:\n"
                 f"\n#{tokens_rank_list[0]} <b>{tokens_name_list[0]}</b> - /{tokens_symbol_list[0]} - {tokens_price_list[0]} <b>$</b>\n"
@@ -148,15 +248,15 @@ async def get_tokens_stat(sort: str, res: str, page: int) -> str:
                 f"📊 {total_volume_list[3]} <b>$</b>\n"
                 f"\n#{tokens_rank_list[4]} <b>{tokens_name_list[4]}</b> - /{tokens_symbol_list[4]} - {tokens_price_list[4]} <b>$</b>\n"
                 f"📊 {total_volume_list[4]} <b>$</b>\n"
-                f"\n#{tokens_rank_list[5]} <b>{tokens_name_list[5]}</b> - /{tokens_symbol_list[5]} - {tokens_price_list[0]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[5]} <b>{tokens_name_list[5]}</b> - /{tokens_symbol_list[5]} - {tokens_price_list[5]} <b>$</b>\n"
                 f"📊 {total_volume_list[5]} <b>$</b>\n"
-                f"\n#{tokens_rank_list[6]} <b>{tokens_name_list[6]}</b> - /{tokens_symbol_list[6]} - {tokens_price_list[1]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[6]} <b>{tokens_name_list[6]}</b> - /{tokens_symbol_list[6]} - {tokens_price_list[6]} <b>$</b>\n"
                 f"📊 {total_volume_list[6]} <b>$</b>\n"
-                f"\n#{tokens_rank_list[7]} <b>{tokens_name_list[7]}</b> - /{tokens_symbol_list[7]} - {tokens_price_list[2]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[7]} <b>{tokens_name_list[7]}</b> - /{tokens_symbol_list[7]} - {tokens_price_list[7]} <b>$</b>\n"
                 f"📊 {total_volume_list[7]} <b>$</b>\n"
-                f"\n#{tokens_rank_list[8]} <b>{tokens_name_list[8]}</b> - /{tokens_symbol_list[8]} - {tokens_price_list[3]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[8]} <b>{tokens_name_list[8]}</b> - /{tokens_symbol_list[8]} - {tokens_price_list[8]} <b>$</b>\n"
                 f"📊 {total_volume_list[8]} <b>$</b>\n"
-                f"\n#{tokens_rank_list[9]} <b>{tokens_name_list[9]}</b> - /{tokens_symbol_list[9]} - {tokens_price_list[4]} <b>$</b>\n"
+                f"\n#{tokens_rank_list[9]} <b>{tokens_name_list[9]}</b> - /{tokens_symbol_list[9]} - {tokens_price_list[9]} <b>$</b>\n"
                 f"📊 {total_volume_list[9]} <b>$</b>\n"
                 f"\nСтраница: <b>{page}</b> {page_info}"
             )
@@ -206,28 +306,28 @@ async def get_tokens_stat(sort: str, res: str, page: int) -> str:
                 f"\n\nСтраница: <b>{page}</b> {page_info}    🕑 <b>7д</b>"
             )
 
-            percentage_result = (
-                f"<b>{tokens_name_list[0]}</b> - /{tokens_symbol_list[0]} - {tokens_price_list[0]} <b>$</b>\n"
-                f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[0]}%\n"
-                f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[0]}%\n"
-                f"{d7_emoji} <b>30 дней:</b> {token_7d_list[0]}%\n"
-                f"\n<b>{tokens_name_list[1]}</b> - /{tokens_symbol_list[1]} - {tokens_price_list[1]} <b>$</b>\n"
-                f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[1]}%\n"
-                f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[1]}%\n"
-                f"{d7_emoji} <b>30 дней:</b> {token_7d_list[1]}%\n"
-                f"\n<b>{tokens_name_list[2]}</b> - /{tokens_symbol_list[2]} - {tokens_price_list[2]} <b>$</b>\n"
-                f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[2]}%\n"
-                f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[2]}%\n"
-                f"{d7_emoji} <b>30 дней:</b> {token_7d_list[2]}%\n"
-                f"\n<b>{tokens_name_list[3]}</b> - /{tokens_symbol_list[3]} - {tokens_price_list[3]} <b>$</b>\n"
-                f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[3]}%\n"
-                f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[3]}%\n"
-                f"{d7_emoji} <b>30 дней:</b> {token_7d_list[3]}%\n"
-                f"\n<b>{tokens_name_list[4]}</b> - /{tokens_symbol_list[4]} - {tokens_price_list[4]} <b>$</b>\n"
-                f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[4]}%\n"
-                f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[4]}%\n"
-                f"{emoji_24h_list[5]} <b>30 дней:</b> {token_7d_list[4]}%\n"
-            )
+            # percentage_result = (
+            #     f"<b>{tokens_name_list[0]}</b> - /{tokens_symbol_list[0]} - {tokens_price_list[0]} <b>$</b>\n"
+            #     f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[0]}%\n"
+            #     f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[0]}%\n"
+            #     f"{d7_emoji} <b>30 дней:</b> {token_7d_list[0]}%\n"
+            #     f"\n<b>{tokens_name_list[1]}</b> - /{tokens_symbol_list[1]} - {tokens_price_list[1]} <b>$</b>\n"
+            #     f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[1]}%\n"
+            #     f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[1]}%\n"
+            #     f"{d7_emoji} <b>30 дней:</b> {token_7d_list[1]}%\n"
+            #     f"\n<b>{tokens_name_list[2]}</b> - /{tokens_symbol_list[2]} - {tokens_price_list[2]} <b>$</b>\n"
+            #     f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[2]}%\n"
+            #     f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[2]}%\n"
+            #     f"{d7_emoji} <b>30 дней:</b> {token_7d_list[2]}%\n"
+            #     f"\n<b>{tokens_name_list[3]}</b> - /{tokens_symbol_list[3]} - {tokens_price_list[3]} <b>$</b>\n"
+            #     f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[3]}%\n"
+            #     f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[3]}%\n"
+            #     f"{d7_emoji} <b>30 дней:</b> {token_7d_list[3]}%\n"
+            #     f"\n<b>{tokens_name_list[4]}</b> - /{tokens_symbol_list[4]} - {tokens_price_list[4]} <b>$</b>\n"
+            #     f"{emoji_1h_list[0]} <b>24 ч:</b>  {token_1h_list[4]}%\n"
+            #     f"{emoji_24h_list[5]} <b>7 дней:</b> {token_24h_list[4]}%\n"
+            #     f"{emoji_24h_list[5]} <b>30 дней:</b> {token_7d_list[4]}%\n"
+            # )
 
             # mc_volume = (
             #     f"<b>{tokens_name_list[0]}</b> - /{tokens_symbol_list[0]} - {tokens_price_list[0]} <b>$</b>\n"
@@ -248,8 +348,12 @@ async def get_tokens_stat(sort: str, res: str, page: int) -> str:
             #     # f"Page: {page}"
             # )
 
-    if res == "percentage": 
-        return percentage_result
+    if res == "gainers_losers_1h": 
+        return h1_gainers_losers
+    elif res == "gainers_losers_24h": 
+        return h24_gainers_losers
+    elif res == "gainers_losers_7d": 
+        return d7_gainers_losers
     elif res == "market_cap":
         return market_cap_result
     elif res == "total_volume":

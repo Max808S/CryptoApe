@@ -34,9 +34,12 @@ from keyboards.inline import (
     get_extra_24h_tokens_stat_menu_keyboards as ex_h24_kb,
     get_7d_tokens_stat_menu_keyboards as d7_kb,
     get_extra_7d_tokens_stat_menu_keyboards as ex_d7_kb,
+    get_gainers_losers_1h_stat_menu_keyboards as gs_1h_kb,
+    get_gainers_losers_24h_stat_menu_keyboards as gs_24h_kb,
+    get_gainers_losers_7d_stat_menu_keyboards as gs_7d_kb,
     CGSeachFactory, RefreshCoinFactory, CGTokenFactory,
     CoinRateFactory, MarketCapFactory, TotalVolumeFactory,
-    H1_Factory, H24_Factory, D7_Factory
+    H1_Factory, H24_Factory, D7_Factory, GainersLosersFactory
 )
 
 
@@ -44,14 +47,27 @@ coingecko_router = Router(name=__name__)
 
 
 # RANKING TOKENS:
+# @coingecko_router.message(commands="ranking")
+# async def get_tokens_view(message: types.Message) -> str:
+#     """
+#     [COMMAND] Get coins stats.
+#     """
+#     await message.delete()
+#     result = await get_tokens_stat("gainers_losers", "gainers_losers", 111)
+#     await message.answer(result, reply_markup=mc_kb(), disable_web_page_preview=True)
+#     logger.info(
+#         f"USER: {message.from_user.full_name} @{message.from_user.username} "
+#         f"ID: {message.from_user.id} getting 'TOKENS VIEW' menu"
+#     )
+
 @coingecko_router.message(commands="ranking")
-async def get_tokens_view(message: types.Message) -> str:
+async def get_gainers_losers_view(message: types.Message) -> str:
     """
-    [COMMAND] Get coins stats.
+    [COMMAND] Get gainer & losers stats.
     """
     await message.delete()
-    result = await get_tokens_stat("market_cap_desc", "market_cap", 1)
-    await message.answer(result, reply_markup=mc_kb(), disable_web_page_preview=True)
+    result = await get_tokens_stat("market_cap_desc", "gainers_losers_1h", 111)
+    await message.answer(result, reply_markup=gs_1h_kb(), disable_web_page_preview=True)
     logger.info(
         f"USER: {message.from_user.full_name} @{message.from_user.username} "
         f"ID: {message.from_user.id} getting 'TOKENS VIEW' menu"
@@ -63,11 +79,32 @@ async def inline_tokens_view_button(query: CallbackQuery):
     """
     [BUTTON] Get coins stats. 
     """
-    result = await get_tokens_stat("market_cap_desc", "market_cap", 1) # TODO
-    await query.message.edit_text(result, reply_markup=mc_kb())
+    result = await get_tokens_stat("market_cap_desc", "gainers_losers_1h", 111)
+    await query.message.edit_text(result, reply_markup=gs_1h_kb())
     logger.info(
         f"USER: {query.from_user.full_name} @{query.from_user.username} "
         f"ID: {query.from_user.id} getting 'RANK' inline menu"
+    )
+
+
+@coingecko_router.callback_query(GainersLosersFactory.filter(F.action == "gainers_losers"))
+async def callbacks_gainers_losers_fab(query: CallbackQuery, callback_data: CGSeachFactory):
+    val = getattr(callback_data, 'value')
+    try:
+        if val == "1h":
+            result = await get_tokens_stat("market_cap_desc", "gainers_losers_1h", 111)
+            await query.message.edit_text(result, reply_markup=gs_1h_kb())
+        elif val == "24h":
+            result = await get_tokens_stat("market_cap_desc", "gainers_losers_24h", 111)
+            await query.message.edit_text(result, reply_markup=gs_24h_kb())
+        elif val == "7d":
+            result = await get_tokens_stat("market_cap_desc", "gainers_losers_7d", 111)
+            await query.message.edit_text(result, reply_markup=gs_7d_kb())
+    except TelegramBadRequest:
+        await query.answer(f"Обновлено ☑️")
+    logger.info(
+        f"USER: {query.from_user.full_name} @{query.from_user.username} "
+        f"ID: {query.from_user.id} getting GAINERS LOSERS stat."
     )
 
 
@@ -123,12 +160,13 @@ async def callbacks_market_cap_fab(query: CallbackQuery, callback_data: CGSeachF
 @coingecko_router.callback_query(TotalVolumeFactory.filter(F.action == "volume_page"))
 async def callbacks_total_vol_fab(query: CallbackQuery, callback_data: CGSeachFactory):
     val = getattr(callback_data, 'value')
-    result = await get_tokens_stat("volume_desc", "total_volume", val)
     try:
         if val <= 5:
+            result = await get_tokens_stat("volume_desc", "total_volume", val)
             await query.message.edit_text(result, reply_markup=vol_kb())
             await query.answer(f"#{val} ☑️")
         else:
+            result = await get_tokens_stat("volume_desc", "total_volume", val)
             await query.message.edit_text(result, reply_markup=ex_vol_kb())
             await query.answer(f"#{val} ☑️")
     except TelegramBadRequest:
